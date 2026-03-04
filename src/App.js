@@ -9,7 +9,9 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/hello")
+ //   fetch("http://localhost:8080/api/hello")
+      fetch("/api/hello") // provisoire
+
       .then(response => response.text())
       .then(data => setMessage(data))
       .catch(error => setMessage("Erreur de connexion"));
