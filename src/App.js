@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import bannerImg from './assets/images/banner.jpg'; 
 import logoProdigiup from './assets/images/logoProdigiup.png';
-import logoDsi from './assets/images/logoDsi.png';
 
 function App() {
   const [message, setMessage] = useState("Connexion au serveur...");
@@ -48,18 +47,19 @@ function App() {
 
       {/* --- 3. NAVBAR BLANCHE --- */}
       <nav style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '10px 30px',
-        backgroundColor: 'white',
-        height: '100px',
-        boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 1000
-      }}>
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '10px 30px',
+          backgroundColor: 'white',
+          height: '100px',
+          boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+          position: 'sticky',
+          top: 0,
+          zIndex: 1000
+        }}>
         <img src={logoProdigiup} alt="Logo Prodigiup" style={{ height: '80px' }} />
+        <p style={{ fontSize: '40px', opacity: 0.9 }}>E2EPLM Service center </p>
 
         {/* MENU SANDWICH (AU CLIC, ON OUVRE LE MENU) */}
         <div 
@@ -77,7 +77,7 @@ function App() {
         backgroundImage: `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url(${bannerImg})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        height: '200px',
+        height: '60px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -85,7 +85,7 @@ function App() {
         color: 'white',
         textAlign: 'center'
       }}>
-        <p style={{ fontSize: '50px', opacity: 0.9 }}>Centre de service DSI - E2EPLM </p>
+        <p style={{ fontSize: '30px', opacity: 0.9 }}>HOME</p>
       </header>
 
       {/* --- 5. CONTENU --- */}
