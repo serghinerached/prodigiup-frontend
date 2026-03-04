@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/prodigiup-fontend/static/css/main.e6c13ad2.css",
+    "main.js": "/prodigiup-fontend/static/js/main.991aed74.js",
+    "static/js/453.20359781.chunk.js": "/prodigiup-fontend/static/js/453.20359781.chunk.js",
+    "static/media/banner.jpg": "/prodigiup-fontend/static/media/banner.14eb62064aed510119e6.jpg",
+    "index.html": "/prodigiup-fontend/index.html",
+    "main.e6c13ad2.css.map": "/prodigiup-fontend/static/css/main.e6c13ad2.css.map",
+    "main.991aed74.js.map": "/prodigiup-fontend/static/js/main.991aed74.js.map",
+    "453.20359781.chunk.js.map": "/prodigiup-fontend/static/js/453.20359781.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.e6c13ad2.css",
+    "static/js/main.991aed74.js"
+  ]
+}
