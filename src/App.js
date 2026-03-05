@@ -9,7 +9,7 @@ function App() {
 
   // Backend
   useEffect(() => {
-    fetch("/api/hello")
+    fetch("https://prodigiup-backend.onrender.com/api/hello")
       .then(response => response.text())
       .then(data => setMessage(data))
       .catch(error => setMessage("Erreur de connexion"));
