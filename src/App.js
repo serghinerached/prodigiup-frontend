@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import bannerImg from './assets/images/banner.jpg'; 
 import logoProdigiup from './assets/images/logoProdigiup.png';
 
+const backendUrl = process.env.REACT_APP_BACKEND_URL;
+
 function App() {
   const [message, setMessage] = useState("Connexion au serveur...");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -9,7 +11,7 @@ function App() {
 
   // Backend
   useEffect(() => {
-    fetch("https://prodigiup-backend.onrender.com/api/hello")
+    fetch(`${backendUrl}/api/hello`)
       .then(response => response.text())
       .then(data => setMessage(data))
       .catch(error => setMessage("Erreur de connexion"));
