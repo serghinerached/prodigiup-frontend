@@ -53,12 +53,12 @@ export const styles = {
     display: 'inline-block',
   },
   divImport:{
-    marginLeft:'230px',
+    //marginLeft:'230px',
     marginBottom:'5px',
+    textAlign:'center',
 
   },
   title:{
-    marginLeft:'120px',
     display: 'inline-block',
     fontweight:'bold',
   },
@@ -89,7 +89,9 @@ export const styles = {
     padding:5,
   },
   tableIncidents:{
-    borderCollapse : 'collapse'
+    borderCollapse : 'collapse',
+    marginLeft:'230px',
+
   },
    tdIncidentsCol4:{
     border:'1px solid black',
