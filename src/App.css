@@ -36,3 +36,27 @@
     transform: rotate(360deg);
   }
 }
+
+/* Layout principal : sidebar + contenu */
+.app-layout {
+  display: flex;
+}
+
+/* Sidebar fixe */
+.sidebar {
+  width: 220px;   /* largeur de ton menu */
+  min-height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #333; /* ou autre couleur */
+  color: white;
+  padding: 20px;
+}
+
+/* Contenu principal à droite de la sidebar */
+.content {
+  margin-left: 220px;  /* doit être égal à la largeur de la sidebar */
+  padding: 20px;
+  width: 100%;
+}
