@@ -23,8 +23,12 @@ export const styles = {
     marginLeft:'50px'
   },
   tableTracker: {
-    width:'90%',
+  //  width:'90%',
     marginLeft:'80px'
+  },
+   tablePerformance1: {
+   // width:'90%',
+    marginLeft:'230px'
   },
   btnImport:{
     width:'80px',

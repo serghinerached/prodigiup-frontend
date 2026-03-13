@@ -55,6 +55,18 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
 
       <li style={{ padding: '15px 0', borderBottom: '1px solid #444',fontSize: 25 }}>
         <NavLink
+          to="/performance"
+          style={({ isActive }) => ({
+            color: isActive ? "cyan" : "white",
+            textDecoration: "none"
+          })}
+        >
+          Performance
+        </NavLink>
+      </li>
+
+      <li style={{ padding: '15px 0', borderBottom: '1px solid #444',fontSize: 25 }}>
+        <NavLink
           to="/Guides/AccessRequests"
           style={({ isActive }) => ({
             color: isActive ? "cyan" : "white",
