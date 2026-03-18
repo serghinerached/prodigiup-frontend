@@ -5,7 +5,7 @@ import bannerImg from './assets/images/banner.jpg';
 import logoProdigiup from './assets/images/logoProdigiup.png';
 
 import TrackerComponent from "./components/TrackerComponent";
-import PerformanceComponent from "./components/PerformanceComponent";
+import PerformanceComponent from "./components/Performance1Component";
 import Sidebar from './components/Sidebar';
 import Navbar from "./components/Navbar";
 /*

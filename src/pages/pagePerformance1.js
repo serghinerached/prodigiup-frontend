@@ -3,17 +3,15 @@ import { styles } from '../components/ComponentCss';
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
-const DivPageTracker = () => {
+const DivPagePerformance1 = () => {
 
   const [excelData, setExcelData] = useState([]);
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedWeek, setSelectedWeek] = useState("");
-  const [selectedType, setSelectedType] = useState("");
   const [appliedYear, setAppliedYear] = useState("");
   const [appliedMonth, setAppliedMonth] = useState("");
   const [appliedWeek, setAppliedWeek] = useState("");
-  const [appliedType, setAppliedType] = useState("");
   const [dateLastImport, setDateLastImport] = useState("");
   const hiddenFileInput = useRef(null);
 
@@ -21,7 +19,6 @@ const DivPageTracker = () => {
   const tabLibMonth = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   const tabNumWeek = Array.from({ length: 52 }, (_, i) => i + 1);
-  const tabType = ["Incident", "Request"];
 
   // Calculer la semaine ISO
   const getISOWeek = (dateStr) => {
@@ -35,28 +32,24 @@ const DivPageTracker = () => {
     return weekNumber;
   };
 
-  // Charger les incidents depuis l'API
-  const fetchIncidents = async () => {
+  // Charger les Performance1s depuis l'API
+  const fetchPerformance1s = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/incidents`);
+      const response = await fetch(`${API_URL}/api/performance1s`);
       const data = await response.json();
 
       const tableData = [
-        ["Opened","Week","Number","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"],
-        ...data.map(inc => {
-          const opened = inc.opened || "";
+        ["Opened","Week","Number","Service","opened","resolved","mttr8days"],
+        ...data.map(perf => {
+          const opened = perf.opened || "";
           const week = getISOWeek(opened);
           return [
             opened,
             week,
-            inc.number || "",
-            inc.assignedTo || "",
-            inc.state || "",
-            inc.assignmentGroup || "",
-            inc.requestedfor || "",
-            inc.resolved || "",
-            inc.closed || "",
-            inc.service || ""
+            perf.number || "",
+            perf.service || "",
+            perf.resolved || "",
+            perf.mttr8days || "",
           ];
         })
       ];
@@ -64,20 +57,19 @@ const DivPageTracker = () => {
       setExcelData(tableData);
 
     } catch (error) {
-      console.error("Erreur fetch incidents :", error);
-      setExcelData([["Opened","Week","Number","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"]]);
+      console.error("Erreur fetch Performance1s :", error);
+      setExcelData([["Opened","Week","Number","Service","opened","resolved","mttr8days"]]);
     }
   };
 
   useEffect(() => {
-    fetchIncidents();
+    fetchPerformance1s();
   }, [dateLastImport]);
 
   // Handlers sélection
   const handleSelectYearChange = (event) => setSelectedYear(event.target.value);
   const handleSelectMonthChange = (event) => setSelectedMonth(event.target.value);
   const handleSelectWeekChange = (event) => setSelectedWeek(event.target.value);
-  const handleSelectTypeChange = (event) => setSelectedType(event.target.value);
 
   // Import Excel
   const handleClick = () => hiddenFileInput.current.click();
@@ -90,19 +82,19 @@ const DivPageTracker = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch(`${API_URL}/api/incidents/import-excel`, {
+      const response = await fetch(`${API_URL}/api/Performance1s/import-excel`, {
         method: "POST",
         body: formData,
       });
 
       const result = await response.text();
-      alert(result);
+      alert("Result: " + result);
 
       setDateLastImport(new Date().toLocaleString());
-      fetchIncidents();
+      fetchPerformance1s();
 
     } catch (error) {
-      console.error(error);
+      console.error("Error import : " + error);
       alert("Erreur lors de l'import");
     }
 
@@ -114,14 +106,13 @@ const DivPageTracker = () => {
     setAppliedYear(selectedYear);
     setAppliedMonth(selectedMonth);
     setAppliedWeek(selectedWeek);
-    setAppliedType(selectedType);
   };
 
   // Filtrage côté front
   const filteredData = excelData.map((row,index) => {
     if(index===0) return row; // header
 
-    const [openedStr, weekStr, number, assignedTo, state, assignmentGroup, requestedFor, resolvedStr, closedStr, service] = row;
+    const [openedStr, weekStr, number, service,resolvedStr, mttr8daysStr] = row;
     const opened = openedStr ? new Date(openedStr) : null;
     const week = weekStr || "";
 
@@ -134,19 +125,13 @@ const DivPageTracker = () => {
     // Filtre Week
     if(appliedWeek && week.toString() !== appliedWeek) return null;
 
-    // Filtre Type
-    if(appliedType && appliedType!=="") {
-      if(appliedType==="Incident" && !number.toLowerCase().includes("inc")) return null;
-      if(appliedType==="Request" && !number.toLowerCase().includes("req")) return null;
-    }
-
     return row;
   }).filter(Boolean);
 
   return (
     <div style={styles.divImport}>
 
-      <h2 style={styles.title}>TRACKER</h2>
+      <h2 style={styles.title}>PERFORMANCE - MTTR/8</h2>
       <br />
 
       <input
@@ -180,14 +165,7 @@ const DivPageTracker = () => {
           {tabNumWeek.map((numWeek,index)=> <option key={index} value={numWeek}>{numWeek}</option>)}
         </select>
       </label>
-
-      <label>&nbsp;&nbsp;Type&nbsp;
-        <select value={selectedType} onChange={handleSelectTypeChange}>
-          <option value="">--All--</option>
-          {tabType.map((numType,index)=> <option key={index} value={numType}>{numType}</option>)}
-        </select>
-      </label>
-
+     
       <button style={styles.btnUpdate} onClick={handleFilterClick}>Filter</button>
 
       <br /><br />
@@ -212,4 +190,4 @@ const DivPageTracker = () => {
   );
 };
 
-export default DivPageTracker;
+export default DivPagePerformance1;
