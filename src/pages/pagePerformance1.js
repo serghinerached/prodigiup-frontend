@@ -163,6 +163,10 @@ const DivPagePerformance1 = () => {
     const [number, service, weekStr, openedStr, resolvedStr, mttr8days] = row;
     const opened = openedStr ? new Date(openedStr) : null;
 
+    // ✅ FILTRE GLOBAL : exclure si Resolved vide
+    if(!resolvedStr) return null;
+
+    // Filtres utilisateur
     if(appliedYear && opened && opened.getFullYear().toString() !== appliedYear) return null;
     if(appliedMonth && opened && (opened.getMonth()+1).toString().padStart(2,'0') !== appliedMonth) return null;
     if(appliedWeek && weekStr.toString() !== appliedWeek) return null;
@@ -170,6 +174,8 @@ const DivPagePerformance1 = () => {
 
     return row;
   }).filter(Boolean);
+
+  //********************************************************************* */
 
   return (
     <div style={styles.divImport}>
