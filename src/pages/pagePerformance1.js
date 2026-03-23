@@ -9,16 +9,19 @@ const DivPagePerformance1 = () => {
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedWeek, setSelectedWeek] = useState("");
+  const [selectedService, setSelectedService] = useState("");
   const [appliedYear, setAppliedYear] = useState("");
   const [appliedMonth, setAppliedMonth] = useState("");
   const [appliedWeek, setAppliedWeek] = useState("");
+  const [appliedService, setAppliedService] = useState("");
   const [dateLastImport, setDateLastImport] = useState("");
   const hiddenFileInput = useRef(null);
 
-  const tabYear = ["2022", "2023", "2024", "2025"];
+  const tabYear = ["2022", "2023", "2024", "2025","2026"];
   const tabLibMonth = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   const tabNumWeek = Array.from({ length: 52 }, (_, i) => i + 1);
+  const tabService = ["visual Studio ::C2A", "Eclispe ::C2A"];
 
   // Calculer la semaine ISO
   const getISOWeek = (dateStr) => {
@@ -32,24 +35,68 @@ const DivPagePerformance1 = () => {
     return weekNumber;
   };
 
-  // Charger les Performance1s depuis l'API
+  // Formatter date dd/mm/yyyy
+  const formatDateFR = (dateStr) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('fr-FR');
+  };
+
+  // Calculer Mttr8Days (jours ouvrés)
+  const calculateMttr8Days = (openedStr, resolvedStr) => {
+    if (!openedStr || !resolvedStr) return "";
+
+    const start = new Date(openedStr);
+    const end = new Date(resolvedStr);
+
+    let totalMs = 0;
+    let current = new Date(start);
+
+    while (current < end) {
+      const day = current.getDay();
+
+      // Si jour ouvré
+      if (day !== 0 && day !== 6) {
+        // fin de la journée (23:59:59)
+        const endOfDay = new Date(current);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        const segmentEnd = end < endOfDay ? end : endOfDay;
+
+        totalMs += (segmentEnd - current);
+      }
+
+      // passer au jour suivant à minuit
+      current.setHours(0, 0, 0, 0);
+      current.setDate(current.getDate() + 1);
+    }
+
+    // conversion ms → jours
+    const days = totalMs / (1000 * 60 * 60 * 24);
+
+    return Number(days).toFixed(2);
+  };
+
+  // Charger les performance1s depuis l'API
   const fetchPerformance1s = async () => {
     try {
       const response = await fetch(`${API_URL}/api/performance1s`);
       const data = await response.json();
 
       const tableData = [
-        ["Opened","Week","Number","Service","opened","resolved","mttr8days"],
-        ...data.map(perf => {
-          const opened = perf.opened || "";
+        ["Number","Service","Week","Opened","Resolved","Mttr8Days"],
+        ...data.map(inc => {
+          const opened = inc.opened || "";
+          const resolved = inc.resolved || "";
           const week = getISOWeek(opened);
+          const mttr8days = calculateMttr8Days(opened,resolved);
           return [
-            opened,
+            inc.number || "",
+            inc.service || "",
             week,
-            perf.number || "",
-            perf.service || "",
-            perf.resolved || "",
-            perf.mttr8days || "",
+            opened,
+            resolved,
+            mttr8days
           ];
         })
       ];
@@ -57,8 +104,8 @@ const DivPagePerformance1 = () => {
       setExcelData(tableData);
 
     } catch (error) {
-      console.error("Erreur fetch Performance1s :", error);
-      setExcelData([["Opened","Week","Number","Service","opened","resolved","mttr8days"]]);
+      console.error("Erreur fetch performance1s :", error);
+      setExcelData([["Number","Service","Week","Opened","Resolved","Mttr8Days"]]);
     }
   };
 
@@ -70,6 +117,7 @@ const DivPagePerformance1 = () => {
   const handleSelectYearChange = (event) => setSelectedYear(event.target.value);
   const handleSelectMonthChange = (event) => setSelectedMonth(event.target.value);
   const handleSelectWeekChange = (event) => setSelectedWeek(event.target.value);
+  const handleSelectServiceChange = (event) => setSelectedService(event.target.value);
 
   // Import Excel
   const handleClick = () => hiddenFileInput.current.click();
@@ -82,19 +130,18 @@ const DivPagePerformance1 = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch(`${API_URL}/api/Performance1s/import-excel`, {
+      const response = await fetch(`${API_URL}/api/performance1s/import-excel`, {
         method: "POST",
         body: formData,
       });
 
       const result = await response.text();
-      alert("Result: " + result);
+      alert(result);
 
       setDateLastImport(new Date().toLocaleString());
-      fetchPerformance1s();
 
     } catch (error) {
-      console.error("Error import : " + error);
+      console.error(error);
       alert("Erreur lors de l'import");
     }
 
@@ -106,24 +153,20 @@ const DivPagePerformance1 = () => {
     setAppliedYear(selectedYear);
     setAppliedMonth(selectedMonth);
     setAppliedWeek(selectedWeek);
+    setAppliedService(selectedService);
   };
 
   // Filtrage côté front
   const filteredData = excelData.map((row,index) => {
     if(index===0) return row; // header
 
-    const [openedStr, weekStr, number, service,resolvedStr, mttr8daysStr] = row;
+    const [number, service, weekStr, openedStr, resolvedStr, mttr8days] = row;
     const opened = openedStr ? new Date(openedStr) : null;
-    const week = weekStr || "";
 
-    // Filtre Year
     if(appliedYear && opened && opened.getFullYear().toString() !== appliedYear) return null;
-
-    // Filtre Month
     if(appliedMonth && opened && (opened.getMonth()+1).toString().padStart(2,'0') !== appliedMonth) return null;
-
-    // Filtre Week
-    if(appliedWeek && week.toString() !== appliedWeek) return null;
+    if(appliedWeek && weekStr.toString() !== appliedWeek) return null;
+    if(appliedService && appliedService !== "" && service !== appliedService) return null;
 
     return row;
   }).filter(Boolean);
@@ -131,7 +174,7 @@ const DivPagePerformance1 = () => {
   return (
     <div style={styles.divImport}>
 
-      <h2 style={styles.title}>PERFORMANCE - MTTR/8</h2>
+      <h2 style={styles.title}>PERFORMANCE - MTTR</h2>
       <br />
 
       <input
@@ -165,20 +208,30 @@ const DivPagePerformance1 = () => {
           {tabNumWeek.map((numWeek,index)=> <option key={index} value={numWeek}>{numWeek}</option>)}
         </select>
       </label>
-     
+
+      <label>&nbsp;&nbsp;Service&nbsp;
+        <select value={selectedService} onChange={handleSelectServiceChange}>
+          <option value="">--All--</option>
+          {tabService.map((numService,index)=> <option key={index} value={numService}>{numService}</option>)}
+        </select>
+      </label>
+
       <button style={styles.btnUpdate} onClick={handleFilterClick}>Filter</button>
 
       <br /><br />
 
       <table style={styles.tableIncidents}>
         <tbody>
-          {filteredData && filteredData.length>0 && filteredData.map((row,rowIndex)=> (
+          {filteredData.map((row,rowIndex)=> (
             <tr key={rowIndex}>
               {row.map((cell,cellIndex)=> (
                 rowIndex===0
                   ? <th key={cellIndex} style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:5 }}>{cell}</th>
-                  : <td key={cellIndex} style={{ border:"1px solid black", padding:5 }}>
-                      {cellIndex===0 && cell ? new Date(cell).toLocaleDateString('fr-FR') : cell}
+                  : <td key={cellIndex} style={{border:"1px solid black",padding:5,
+                                                ...(cellIndex===5 && parseFloat(cell) > 8 ? { backgroundColor:"red", color:"white", fontWeight:"bold" } : {})
+                                              }}
+                    >
+                    {(cellIndex===3 || cellIndex===4) && cell ? formatDateFR(cell) : cell}
                     </td>
               ))}
             </tr>

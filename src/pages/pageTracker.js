@@ -17,7 +17,7 @@ const DivPageTracker = () => {
   const [dateLastImport, setDateLastImport] = useState("");
   const hiddenFileInput = useRef(null);
 
-  const tabYear = ["2022", "2023", "2024", "2025"];
+  const tabYear = ["2022", "2023", "2024", "2025","2026"];
   const tabLibMonth = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   const tabNumWeek = Array.from({ length: 52 }, (_, i) => i + 1);
@@ -35,6 +35,13 @@ const DivPageTracker = () => {
     return weekNumber;
   };
 
+  // Formatter date dd/mm/yyyy
+  const formatDateFR = (dateStr) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    return date.toLocaleDateString('fr-FR');
+  };
+
   // Charger les incidents depuis l'API
   const fetchIncidents = async () => {
     try {
@@ -42,13 +49,13 @@ const DivPageTracker = () => {
       const data = await response.json();
 
       const tableData = [
-        ["Opened","Week","Number","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"],
+        ["Week","Opened","Number","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"],
         ...data.map(inc => {
+          const week = getISOWeek(inc.opened);
           const opened = inc.opened || "";
-          const week = getISOWeek(opened);
           return [
-            opened,
             week,
+            opened,
             inc.number || "",
             inc.assignedTo || "",
             inc.state || "",
@@ -65,7 +72,7 @@ const DivPageTracker = () => {
 
     } catch (error) {
       console.error("Erreur fetch incidents :", error);
-      setExcelData([["Opened","Week","Number","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"]]);
+      setExcelData([["Week","Opened","Number","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"]]);
     }
   };
 
@@ -99,7 +106,6 @@ const DivPageTracker = () => {
       alert(result);
 
       setDateLastImport(new Date().toLocaleString());
-      fetchIncidents();
 
     } catch (error) {
       console.error(error);
@@ -125,16 +131,10 @@ const DivPageTracker = () => {
     const opened = openedStr ? new Date(openedStr) : null;
     const week = weekStr || "";
 
-    // Filtre Year
     if(appliedYear && opened && opened.getFullYear().toString() !== appliedYear) return null;
-
-    // Filtre Month
     if(appliedMonth && opened && (opened.getMonth()+1).toString().padStart(2,'0') !== appliedMonth) return null;
-
-    // Filtre Week
     if(appliedWeek && week.toString() !== appliedWeek) return null;
 
-    // Filtre Type
     if(appliedType && appliedType!=="") {
       if(appliedType==="Incident" && !number.toLowerCase().includes("inc")) return null;
       if(appliedType==="Request" && !number.toLowerCase().includes("req")) return null;
@@ -194,13 +194,13 @@ const DivPageTracker = () => {
 
       <table style={styles.tableIncidents}>
         <tbody>
-          {filteredData && filteredData.length>0 && filteredData.map((row,rowIndex)=> (
+          {filteredData.map((row,rowIndex)=> (
             <tr key={rowIndex}>
               {row.map((cell,cellIndex)=> (
                 rowIndex===0
                   ? <th key={cellIndex} style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:5 }}>{cell}</th>
                   : <td key={cellIndex} style={{ border:"1px solid black", padding:5 }}>
-                      {cellIndex===0 && cell ? new Date(cell).toLocaleDateString('fr-FR') : cell}
+                      {(cellIndex===1 || cellIndex ===7 || cellIndex ===8) && cell ? formatDateFR(cell) : cell}
                     </td>
               ))}
             </tr>
