@@ -164,7 +164,7 @@ const DivPagePerformance1 = () => {
     const opened = openedStr ? new Date(openedStr) : null;
 
     // ✅ FILTRE GLOBAL : exclure si Resolved vide
-    if(!resolvedStr) return null;
+    if(!resolvedStr || resolvedStr === "") return null;
 
     // Filtres utilisateur
     if(appliedYear && opened && opened.getFullYear().toString() !== appliedYear) return null;
