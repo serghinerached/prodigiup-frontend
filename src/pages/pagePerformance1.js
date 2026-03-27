@@ -21,7 +21,8 @@ const DivPagePerformance1 = () => {
   const tabLibMonth = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   const tabNumWeek = Array.from({ length: 52 }, (_, i) => i + 1);
-  const tabService = ["visual Studio ::C2A", "Eclispe ::C2A"];
+  const tabService = ["DYMOLA ::C2A","Eclipse ::C2A","FLOWMASTER ::C2A","Hyperworks_Suite_AH","SaberRD ::C2A","Scade ::C2A",
+    "TeXstudio ::C2A","Visual Studio ::C2A"];
 
   // Calculer la semaine ISO
   const getISOWeek = (dateStr) => {
@@ -178,9 +179,9 @@ const DivPagePerformance1 = () => {
   //********************************************************************* */
 
   return (
-    <div style={styles.divImport}>
+    <div style={{ marginLeft:'230px',marginBottom:'5px',textAlign:'left',}}>
 
-      <h2 style={styles.title}>PERFORMANCE - MTTR</h2>
+      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px'}}>PERFORMANCE - MTTR</h2>
       <br />
 
       <input
@@ -226,25 +227,136 @@ const DivPagePerformance1 = () => {
 
       <br /><br />
 
-      <table style={styles.tableIncidents}>
+      <div style={{ display: 'flex'}}>
+
+      <table style={{ borderCollapse : 'collapse'}}>
         <tbody>
+
           {filteredData.map((row,rowIndex)=> (
             <tr key={rowIndex}>
               {row.map((cell,cellIndex)=> (
                 rowIndex===0
                   ? <th key={cellIndex} style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:5 }}>{cell}</th>
-                  : <td key={cellIndex} style={{border:"1px solid black",padding:5,
-                                                ...(cellIndex===5 && parseFloat(cell) > 8 ? { backgroundColor:"red", color:"white", fontWeight:"bold" } : {})
-                                              }}
-                    >
+                  : <td key={cellIndex} 
+                      style={{border:"1px solid black",padding:5,
+                              ...(cellIndex===5 && parseFloat(cell) > 8 ? { backgroundColor:"red", color:"white", fontWeight:"bold" } : {})
+                            }}
+    >
                     {(cellIndex===3 || cellIndex===4) && cell ? formatDateFR(cell) : cell}
                     </td>
               ))}
             </tr>
           ))}
+            
         </tbody>
       </table>
 
+      
+      <table style={{ borderCollapse : 'collapse', marginLeft:'100px',height:'fit-content' }}>
+        <tbody>
+          <tr>
+            <th colSpan={4} style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:5 }}>
+              Mttr8Days by Month
+            </th>
+          </tr>
+          <tr>
+            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:5 }}>Year</th>
+            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:5 }}>Month</th>
+            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:5 }}>Week</th>
+            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:5 }}>Mttr8Days</th>
+          </tr>
+
+          <tr>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>2022</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>01</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>1</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>2.5</td>
+          </tr>
+
+          <tr>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>2023</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>01</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>1</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>3.5</td>
+          </tr>
+
+          <tr>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>2024</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>01</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>1</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>4.5</td>
+          </tr>
+
+          <tr>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>2025</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>01</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>1</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>5.5</td>
+          </tr>
+
+          <tr>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>2026</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>01</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>1</td>
+            <td style={{border:"1px solid black",padding:5,textAlign:"center"}}>6.5</td>
+          </tr>
+            
+        </tbody>
+      </table>
+
+      <table style={{ borderCollapse : 'collapse', marginLeft:'50px',height:'fit-content' }}>
+        <tbody>
+          <tr>
+            <th colSpan={4} style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:5 }}>
+              Mttr8Days by Service
+            </th>
+          </tr>
+          <tr>
+            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:5 }}>Year</th>
+            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:5 }}>Month</th>
+            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:5 }}>Service</th>
+            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:5 }}>Mttr8Days</th>
+          </tr>
+
+          <tr>
+            <td style={{border:"1px solid black",padding:5}}>2022</td>
+            <td style={{border:"1px solid black",padding:5}}>01</td>
+            <td style={{border:"1px solid black",padding:5}}>Service A</td>
+            <td style={{border:"1px solid black",padding:5}}>2.5</td>
+          </tr>
+
+          <tr>
+            <td style={{border:"1px solid black",padding:5}}>2023</td>
+            <td style={{border:"1px solid black",padding:5}}>01</td>
+            <td style={{border:"1px solid black",padding:5}}>Service B</td>
+            <td style={{border:"1px solid black",padding:5}}>3.5</td>
+          </tr>
+
+          <tr>
+            <td style={{border:"1px solid black",padding:5}}>2024</td>
+            <td style={{border:"1px solid black",padding:5}}>01</td>
+            <td style={{border:"1px solid black",padding:5}}>Service C</td>
+            <td style={{border:"1px solid black",padding:5}}>4.5</td>
+          </tr>
+
+          <tr>
+            <td style={{border:"1px solid black",padding:5}}>2025</td>
+            <td style={{border:"1px solid black",padding:5}}>01</td>
+            <td style={{border:"1px solid black",padding:5}}>Service D</td>
+            <td style={{border:"1px solid black",padding:5}}>5.5</td>
+          </tr>
+
+          <tr>
+            <td style={{border:"1px solid black",padding:5}}>2026</td>
+            <td style={{border:"1px solid black",padding:5}}>01</td>
+            <td style={{border:"1px solid black",padding:5}}>Service E</td>
+            <td style={{border:"1px solid black",padding:5}}>6.5</td>
+          </tr>
+            
+        </tbody>
+      </table>
+
+    </div>
     </div>
   );
 };

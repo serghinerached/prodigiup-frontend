@@ -97,6 +97,7 @@ export const styles = {
     marginLeft:'230px',
 
   },
+ 
    tdIncidentsCol4:{
     border:'1px solid black',
     padding:5,
