@@ -40,13 +40,22 @@ export const styles = {
     marginRight:'5px'
   },
   btnUpdate:{
-    width:'80px',
+    width:'50px',
     backgroundColor: 'green',
     color:'white',
     fontweight:'bold',
     border:'3px solid black',
     display: 'inline-block',
     marginLeft:'10px'
+  },
+  btnUpdate2:{
+    width:'50px',
+    backgroundColor: 'green',
+    color:'white',
+    fontweight:'bold',
+    border:'3px solid black',
+    display: 'inline-block',
+    marginLeft:'5px'
   },
     btnOk: {
     width:'50px',
