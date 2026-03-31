@@ -10,7 +10,7 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
       position: 'fixed',
       top: 0,
       left: isMenuOpen ? '0' : '-250px',
-      width: '220px',
+      width: '200px',
       height: '100%',
       backgroundColor: '#333',
       color: 'white',

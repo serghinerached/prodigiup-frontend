@@ -227,10 +227,10 @@ const DivPagePerformance1 = () => {
   //********************************************************************* */
 
   return (
-    <div style={{ marginLeft:'230px',marginBottom:'5px',textAlign:'left',}}>
+    <div style={{ marginLeft:'220px',marginBottom:'5px',textAlign:'left',}}>
 
-      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px'}}>PERFORMANCE - MTTR</h2>
-      <br />
+      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>PERFORMANCE - MTTR</h2>
+      
 
       <input
         type="file"
@@ -243,212 +243,234 @@ const DivPagePerformance1 = () => {
 
       <p style={styles.p2}> Last import : {dateLastImport}</p><br />
 
-      <br /><br />
+      <br />
 
       <div style={{ display: 'flex'}}>
 
-      <table style={{ borderCollapse : 'collapse'}}>
-        <tbody>
+        <table style={{ borderCollapse : 'collapse'}}>
+          <tbody>
 
-          <tr>
-            <th
-              colSpan={6}
-              style={{
-                textAlign: "left",
-                border: "1px solid black",
-                backgroundColor: "lightgreen",
-                padding: 3
-              }}
-            >
-             <label style={{ marginRight: 5}}>Year&nbsp;
-        <select value={selectedYear} onChange={handleSelectYearChange}>
-          <option value="">--All--</option>
-          {tabYear.map((libYear,index)=> <option key={index} value={libYear}>{libYear}</option>)}
-        </select>
-      </label>
+            <tr>
+              <th
+                colSpan={6}
+                style={{
+                  textAlign: "left",
+                  border: "1px solid black",
+                  backgroundColor: "lightgreen",
+                  padding: 3
+                }}
+              >
+              <label style={{ marginRight: 3}}>Year&nbsp;
+          <select value={selectedYear} onChange={handleSelectYearChange}>
+            <option value="">--All--</option>
+            {tabYear.map((libYear,index)=> <option key={index} value={libYear}>{libYear}</option>)}
+          </select>
+        </label>
 
-      <label style={{ marginRight: 5 }}>Month&nbsp;
-        <select value={selectedMonth} onChange={handleSelectMonthChange}>
-          <option value="">--All--</option>
-          {tabLibMonth.map((libMonth,index)=> <option key={index} value={String(index+1).padStart(2,'0')}>{libMonth}</option>)}
-        </select>
-      </label>
+        <label style={{ marginRight: 3 }}>Month&nbsp;
+          <select value={selectedMonth} onChange={handleSelectMonthChange}>
+            <option value="">--All--</option>
+            {tabLibMonth.map((libMonth,index)=> <option key={index} value={String(index+1).padStart(2,'0')}>{libMonth}</option>)}
+          </select>
+        </label>
 
-      <label>Week&nbsp;
-        <select value={selectedWeek} onChange={handleSelectWeekChange}>
-          <option value="">--All--</option>
-          {tabNumWeek.map((numWeek,index)=> <option key={index} value={numWeek}>{numWeek}</option>)}
-        </select>
-      </label>
+        <label>Week&nbsp;
+          <select value={selectedWeek} onChange={handleSelectWeekChange}>
+            <option value="">--All--</option>
+            {tabNumWeek.map((numWeek,index)=> <option key={index} value={numWeek}>{numWeek}</option>)}
+          </select>
+        </label>
 
-      <label>&nbsp;&nbsp;Service&nbsp;
-        <select value={selectedService} onChange={handleSelectServiceChange}>
-          <option value="">--All--</option>
-          {listCots.map((cot, index) => (
-            <option key={index} value={cot}>{cot}</option>
-          ))}        
-        </select>
-      </label>
+        <label>&nbsp;&nbsp;Service&nbsp;
+          <select value={selectedService} onChange={handleSelectServiceChange}>
+            <option value="">--All--</option>
+            {listCots.map((cot, index) => (
+              <option key={index} value={cot}>{cot}</option>
+            ))}        
+          </select>
+        </label>
 
-      <button style={styles.btnUpdate} onClick={handleFilterClick}>Filter</button>
-            </th>
-          </tr>
+        <button style={styles.btnUpdate} onClick={handleFilterClick}>Filter</button>
+              </th>
+            </tr>
 
-          {filteredData.map((row,rowIndex)=> (
-            <tr key={rowIndex}>
-              {row.map((cell,cellIndex)=> (
-                rowIndex===0
-                  ? <th key={cellIndex} style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>{cell}</th>
-                  : <td key={cellIndex} 
-                      style={{border:"1px solid black",padding:3,
-                              ...(cellIndex===5 && parseFloat(cell) > 8 ? { backgroundColor:"red", color:"white", fontWeight:"bold" } : {})
-                            }}
-    >
-                    {(cellIndex===3 || cellIndex===4) && cell ? formatDateFR(cell) : cell}
+            {filteredData.map((row,rowIndex)=> (
+              <tr key={rowIndex}>
+                {row.map((cell,cellIndex)=> (
+                  rowIndex===0
+                    ? <th key={cellIndex} style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>{cell}</th>
+                    : <td key={cellIndex} 
+                        style={{border:"1px solid black",padding:3,
+                                ...(cellIndex===5 && parseFloat(cell) > 8 ? { backgroundColor:"red", color:"white", fontWeight:"bold" } : {})
+                              }}
+                      >
+                        {(cellIndex===3 || cellIndex===4) && cell ? formatDateFR(cell) : cell}
+                      </td>
+                ))}
+              </tr>
+            ))}
+              
+          </tbody>
+        </table>
+
+        {/*    
+        <table style={{ borderCollapse : 'collapse', marginLeft:'70px',height:'fit-content' }}>
+          <tbody>
+            <tr>
+              <th
+                colSpan={4}
+                style={{
+                  textAlign: "left",
+                  border: "1px solid black",
+                  backgroundColor: "lightgreen",
+                  padding: 3
+                }}
+              >
+                <label style={{ marginRight: 15,marginLeft:5 }}>Year&nbsp;
+                  <select value={selectedYear} onChange={handleSelectYearChange}>
+                    <option value="">--All--</option>
+                    {tabYear.map((libYear,index)=> <option key={index} value={libYear}>{libYear}</option>)}
+                  </select>
+                </label>
+
+                <label style={{ marginRight: 5 }}>Month&nbsp;
+                  <select value={selectedMonth} onChange={handleSelectMonthChange}>
+                    <option value="">--All--</option>
+                    {tabLibMonth.map((libMonth,index)=> <option key={index} value={String(index+1).padStart(2,'0')}>{libMonth}</option>)}
+                  </select>
+                </label>
+                <button style={styles.btnUpdate2} onClick={null}>Filter</button>
+              </th>
+
+              
+            </tr>
+
+            <tr>
+              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Year</th>
+              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Month</th>
+              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Incidents</th>
+              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Mttr8Days</th>
+            </tr>
+
+            {tabYearSorted.flatMap((year) => {
+              const currentYear = new Date().getFullYear();
+              const currentMonth = new Date().getMonth() + 1;
+              const maxMonth = parseInt(year, 10) === currentYear ? currentMonth : 12;
+
+              return Array.from({ length: maxMonth }, (_, index) => {
+                const month = maxMonth - index;
+
+                return (
+                  <tr key={`${year}-${month}`}>
+                    <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
+                      {year}
                     </td>
-              ))}
-            </tr>
-          ))}
+
+                    <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
+                      {String(month).padStart(2, "0")}
+                    </td>
+
+                    <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
+                      {mttrByMonth[`${year}-${String(month).padStart(2, "0")}`]?.count || 0}
+                    </td>
+
+                    <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
+                      {mttrByMonth[`${year}-${String(month).padStart(2, "0")}`]
+                        ? (
+                            mttrByMonth[`${year}-${String(month).padStart(2, "0")}`].total /
+                            mttrByMonth[`${year}-${String(month).padStart(2, "0")}`].count
+                          ).toFixed(2)
+                        : ""}
+                    </td>
+                  </tr>
+                ); 
+
+              });
+
+            })}
             
-        </tbody>
-      </table>
+          </tbody>
+        </table>
 
-      
-      <table style={{ borderCollapse : 'collapse', marginLeft:'80px',height:'fit-content' }}>
-        <tbody>
-          <tr>
-            <th
-              colSpan={4}
-              style={{
-                textAlign: "center",
-                border: "1px solid black",
-                backgroundColor: "lightgreen",
-                padding: 3
-              }}
-            >
-              <label style={{ marginRight: 3 }}>Service&nbsp;
-                <select value={selectedYear} onChange={handleSelectYearChange}>
-                  <option value="">--All--</option>
-                  {listCots.map((cot, index) => (
-                    <option key={index} value={cot}>{cot}</option>
-                  ))}
-                </select>
-              </label>
-               <button style={styles.btnUpdate2} onClick={null}>Filter</button>
-            </th>
-          </tr>
+        */} 
 
-          <tr>
-            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Year</th>
-            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Month</th>
-            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Incidents</th>
-            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Mttr8Days</th>
-          </tr>
+        {/* TABLEAU 2*/ } 
+        <table style={{ borderCollapse : 'collapse', marginLeft:'50px',height:'fit-content' }}>
+          <tbody>
+            <tr>
+              <th
+                colSpan={4}
+                style={{
+                  textAlign: "left",
+                  border: "1px solid black",
+                  backgroundColor: "lightgreen",
+                  padding: 3
+                }}
+              >
+                <label style={{ marginRight: 3 }}>Service&nbsp;
+                  <select value={selectedYear} onChange={handleSelectYearChange}>
+                    <option value="">--All--</option>
+                    {listCots.map((cot, index) => (
+                      <option key={index} value={cot}>{cot}</option>
+                    ))}
+                  </select>
+                </label>
+                
+                <label style={{ marginRight: 5}}>Year&nbsp;
+                  <select value={selectedYear} onChange={handleSelectYearChange}>
+                    <option value="">--All--</option>
+                    {tabYear.map((libYear,index)=> <option key={index} value={libYear}>{libYear}</option>)}
+                  </select>
+                </label>
 
-          {tabYearSorted.flatMap((year) => {
-            const currentYear = new Date().getFullYear();
-            const currentMonth = new Date().getMonth() + 1;
-            const maxMonth = parseInt(year, 10) === currentYear ? currentMonth : 12;
+                <label style={{ marginRight: 5 }}>Month&nbsp;
+                  <select value={selectedMonth} onChange={handleSelectMonthChange}>
+                    <option value="">--All--</option>
+                    {tabLibMonth.map((libMonth,index)=> <option key={index} value={String(index+1).padStart(2,'0')}>{libMonth}</option>)}
+                  </select>
+                </label>
 
-            return Array.from({ length: maxMonth }, (_, index) => {
-              const month = maxMonth - index;
-
-              return (
-                <tr key={`${year}-${month}`}>
-                  <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
-                    {year}
-                  </td>
-
-                  <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
-                    {String(month).padStart(2, "0")}
-                  </td>
-
-                  <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
-                    {mttrByMonth[`${year}-${String(month).padStart(2, "0")}`]?.count || 0}
-                  </td>
-
-                  <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
-                    {mttrByMonth[`${year}-${String(month).padStart(2, "0")}`]
-                      ? (
-                          mttrByMonth[`${year}-${String(month).padStart(2, "0")}`].total /
-                          mttrByMonth[`${year}-${String(month).padStart(2, "0")}`].count
-                        ).toFixed(2)
-                      : ""}
-                  </td>
-                </tr>
-              ); 
-
-            });
-
-          })}
-          
-        </tbody>
-      </table>
-
-
-      <table style={{ borderCollapse : 'collapse', marginLeft:'50px',height:'fit-content' }}>
-        <tbody>
-          <tr>
-            <th
-              colSpan={4}
-              style={{
-                textAlign: "center",
-                border: "1px solid black",
-                backgroundColor: "lightgreen",
-                padding: 3
-              }}
-            >
-              <label style={{ marginRight: 15 }}>Year&nbsp;
-                <select value={selectedYear} onChange={handleSelectYearChange}>
-                  <option value="">--All--</option>
-                  {tabYear.map((libYear,index)=> <option key={index} value={libYear}>{libYear}</option>)}
-                </select>
-              </label>
-
-              <label style={{ marginRight: 5 }}>Month&nbsp;
-                <select value={selectedMonth} onChange={handleSelectMonthChange}>
-                  <option value="">--All--</option>
-                  {tabLibMonth.map((libMonth,index)=> <option key={index} value={String(index+1).padStart(2,'0')}>{libMonth}</option>)}
-                </select>
-              </label>
-              <button style={styles.btnUpdate2} onClick={null}>Filter</button>
-
-            </th>
-            
-          </tr>
-
-          <tr>
-            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Service</th>
-            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Incidents</th>
-            <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Mttr8Days</th>
-          </tr>
-
-              
-          {listCots.map((cot, index) => (
-            <tr key={index} >
-              <td style={{ border:"1px solid black", padding:3, textAlign:"left" }}>
-                {cot}
-              </td>
-
-              <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
-                {mttrByService[cot]?.count || 0}
-              </td>
-
-              <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
-                {mttrByService[cot]
-                  ? (mttrByService[cot].total / mttrByService[cot].count).toFixed(2)
-                  : ""}
-              </td>
-
+                <button style={styles.btnUpdate2} onClick={null}>Filter</button>
+              </th>
             </tr>
-          ))}
-              
-          
-        </tbody>
-      </table>
+
+            <tr>
+              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Service</th>
+              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Incidents</th>
+              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Mttr8Days</th>
+            </tr>
+
+            <tr>
+              <th style={{ textAlign:"center", border:"1px solid black", padding:3 }}></th>
+              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:3 }}>{filteredData.length}</th>
+              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:3 }}>2,5</th>
+            </tr>
+                
+            {listCots.map((cot, index) => (
+              <tr key={index} >
+                <td style={{ border:"1px solid black", padding:3, textAlign:"left" }}>
+                  {cot}
+                </td>
+
+                <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
+                  {mttrByService[cot]?.count || 0}
+                </td>
+
+                <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
+                  {mttrByService[cot]
+                    ? (mttrByService[cot].total / mttrByService[cot].count).toFixed(2)
+                    : ""}
+                </td>
+
+              </tr>
+            ))}
+                
+            
+          </tbody>
+        </table>
 
 
-    </div>
+      </div>
     </div>
   );
 };

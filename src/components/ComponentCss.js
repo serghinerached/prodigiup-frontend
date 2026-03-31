@@ -46,7 +46,7 @@ export const styles = {
     fontweight:'bold',
     border:'3px solid black',
     display: 'inline-block',
-    marginLeft:'10px'
+    marginLeft:'5px'
   },
   btnUpdate2:{
     width:'50px',

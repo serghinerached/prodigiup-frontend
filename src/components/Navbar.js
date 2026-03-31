@@ -35,7 +35,7 @@ function Navbar({ dateTime, setIsMenuOpen }) {
         </div>
 
         {/* LOGO + TITRE */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginLeft: '200px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginLeft: '180px' }}>
           <img src={logoProdigiup} alt="Logo" style={{ height: '80px' }} />
           <span style={{ fontSize: '20px' }}>E2EPLM - Service center</span>
         </div>
