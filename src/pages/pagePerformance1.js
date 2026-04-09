@@ -247,6 +247,7 @@ const DivPagePerformance1 = () => {
 
       <div style={{ display: 'flex'}}>
 
+        {/* TABLEAU 1*/ } 
         <table style={{ borderCollapse : 'collapse'}}>
           <tbody>
 
@@ -313,86 +314,6 @@ const DivPagePerformance1 = () => {
           </tbody>
         </table>
 
-        {/*    
-        <table style={{ borderCollapse : 'collapse', marginLeft:'70px',height:'fit-content' }}>
-          <tbody>
-            <tr>
-              <th
-                colSpan={4}
-                style={{
-                  textAlign: "left",
-                  border: "1px solid black",
-                  backgroundColor: "lightgreen",
-                  padding: 3
-                }}
-              >
-                <label style={{ marginRight: 15,marginLeft:5 }}>Year&nbsp;
-                  <select value={selectedYear} onChange={handleSelectYearChange}>
-                    <option value="">--All--</option>
-                    {tabYear.map((libYear,index)=> <option key={index} value={libYear}>{libYear}</option>)}
-                  </select>
-                </label>
-
-                <label style={{ marginRight: 5 }}>Month&nbsp;
-                  <select value={selectedMonth} onChange={handleSelectMonthChange}>
-                    <option value="">--All--</option>
-                    {tabLibMonth.map((libMonth,index)=> <option key={index} value={String(index+1).padStart(2,'0')}>{libMonth}</option>)}
-                  </select>
-                </label>
-                <button style={styles.btnUpdate2} onClick={null}>Filter</button>
-              </th>
-
-              
-            </tr>
-
-            <tr>
-              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Year</th>
-              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Month</th>
-              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Incidents</th>
-              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Mttr8Days</th>
-            </tr>
-
-            {tabYearSorted.flatMap((year) => {
-              const currentYear = new Date().getFullYear();
-              const currentMonth = new Date().getMonth() + 1;
-              const maxMonth = parseInt(year, 10) === currentYear ? currentMonth : 12;
-
-              return Array.from({ length: maxMonth }, (_, index) => {
-                const month = maxMonth - index;
-
-                return (
-                  <tr key={`${year}-${month}`}>
-                    <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
-                      {year}
-                    </td>
-
-                    <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
-                      {String(month).padStart(2, "0")}
-                    </td>
-
-                    <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
-                      {mttrByMonth[`${year}-${String(month).padStart(2, "0")}`]?.count || 0}
-                    </td>
-
-                    <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
-                      {mttrByMonth[`${year}-${String(month).padStart(2, "0")}`]
-                        ? (
-                            mttrByMonth[`${year}-${String(month).padStart(2, "0")}`].total /
-                            mttrByMonth[`${year}-${String(month).padStart(2, "0")}`].count
-                          ).toFixed(2)
-                        : ""}
-                    </td>
-                  </tr>
-                ); 
-
-              });
-
-            })}
-            
-          </tbody>
-        </table>
-
-        */} 
 
         {/* TABLEAU 2*/ } 
         <table style={{ borderCollapse : 'collapse', marginLeft:'50px',height:'fit-content' }}>
@@ -456,7 +377,13 @@ const DivPagePerformance1 = () => {
                   {mttrByService[cot]?.count || 0}
                 </td>
 
-                <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
+                <td 
+                  style={{ border:"1px solid black", padding:3, textAlign:"center", 
+                          backgroundColor: mttrByService[cot] && (mttrByService[cot].total / mttrByService[cot].count) > 8 ? "red" : "transparent",
+                          color: mttrByService[cot] && (mttrByService[cot].total / mttrByService[cot].count) > 8 ? "white" : "inherit",
+                          fontWeight: mttrByService[cot] && (mttrByService[cot].total / mttrByService[cot].count) > 8 ? "bold" : "normal"
+                        }}
+                >
                   {mttrByService[cot]
                     ? (mttrByService[cot].total / mttrByService[cot].count).toFixed(2)
                     : ""}
