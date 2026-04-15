@@ -4,7 +4,7 @@ import listCots from "./listCots";
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
-const DivPagePerformance1 = () => {
+const DivPageDatas = () => {
 
   const [excelData, setExcelData] = useState([]);
   const [selectedYear, setSelectedYear] = useState("");
@@ -92,7 +92,10 @@ const DivPagePerformance1 = () => {
           const opened = inc.opened || "";
           const resolved = inc.resolved || "";
           const week = getISOWeek(opened);
-          const mttr8days = calculateMttr8Days(opened,resolved);
+
+          // ✅ ON UTILISE LA VALEUR DE LA DB
+          const mttr8days = inc.mttr8days || "";
+
           return [
             inc.number || "",
             inc.service || "",
@@ -111,6 +114,7 @@ const DivPagePerformance1 = () => {
       setExcelData([["Number","Service","Week","Opened","Resolved","Mttr8Days"]]);
     }
   };
+
 
   useEffect(() => {
     fetchPerformance1s();
@@ -227,7 +231,7 @@ const DivPagePerformance1 = () => {
   return (
     <div style={{ marginLeft:'220px',marginBottom:'5px',textAlign:'left',}}>
 
-      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>PERFORMANCE - MTTR</h2>
+      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>PERFORMANCE - Datas</h2>
 
       <input type="file" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} /> 
       <button style={styles.btnImport} onClick={handleClick}>Import</button> 
@@ -365,4 +369,4 @@ const DivPagePerformance1 = () => {
   );
 };
 
-export default DivPagePerformance1;
+export default DivPageDatas;

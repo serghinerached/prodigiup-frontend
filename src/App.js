@@ -5,7 +5,8 @@ import bannerImg from './assets/images/banner.jpg';
 import logoProdigiup from './assets/images/logoProdigiup.png';
 
 import TrackerComponent from "./components/TrackerComponent";
-import PerformanceComponent from "./components/Performance1Component";
+import DatasComponent from "./components/DatasComponent";
+import GraphsComponent from "./components/GraphsComponent";
 import Sidebar from './components/Sidebar';
 import Navbar from "./components/Navbar";
 /*
@@ -68,8 +69,8 @@ function App() {
 
             <Route path="/" element={<><h2 style={{ color: '#007bff' }}>{message}</h2></>} />
             <Route path="/tracker" element={<TrackerComponent />} />
-            <Route path="/performance" element={<PerformanceComponent />} />
-
+            <Route path="/performance/datas" element={<DatasComponent />} />
+            <Route path="/performance/graphs" element={<GraphsComponent />} />
 
             {/* 
             <Route path="/Guides/AccessRequests" element={<GuideRequestsComponent />} />

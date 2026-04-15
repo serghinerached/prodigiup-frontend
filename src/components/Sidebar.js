@@ -1,8 +1,10 @@
 import { NavLink } from "react-router-dom";
-
+import { useState } from "react";
 
 
 function Sidebar({ isMenuOpen, setIsMenuOpen }) {
+
+  const [openPerformance, setOpenPerformance] = useState(false);
 
   return (
 
@@ -53,17 +55,61 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
         </NavLink>
       </li>
 
-      <li style={{ padding: '15px 0', borderBottom: '1px solid #444',fontSize: 25 }}>
-        <NavLink
-          to="/performance"
-          style={({ isActive }) => ({
-            color: isActive ? "cyan" : "white",
-            textDecoration: "none"
-          })}
+
+      <li style={{ padding: '15px 0', borderBottom: '1px solid #444', fontSize: 25 }}>
+
+        {/* Titre cliquable */}
+        <div
+          onClick={() => setOpenPerformance(!openPerformance)}
+          style={{
+            color: "white",
+            cursor: "pointer",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
         >
           Performance
-        </NavLink>
+          <span style={{ fontSize: 18 }}>
+            {openPerformance ? "▼" : "▶"}
+          </span>
+        </div>
+
+        {/* Sous-menu */}
+        {openPerformance && (
+          <ul style={{ listStyle: "none", paddingLeft: 15, marginTop: 10 }}>
+
+            <li style={{ marginBottom: 5 }}>
+              <NavLink
+                to="/performance/datas"
+                style={({ isActive }) => ({
+                  color: isActive ? "cyan" : "white",
+                  textDecoration: "none",
+                  fontSize: 20
+                })}
+              >
+                Datas
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink
+                to="/performance/graphs"
+                style={({ isActive }) => ({
+                  color: isActive ? "cyan" : "white",
+                  textDecoration: "none",
+                  fontSize: 20
+                })}
+              >
+                Graphs
+              </NavLink>
+            </li>
+
+          </ul>
+        )}
+
       </li>
+
 
       <li style={{ padding: '15px 0', borderBottom: '1px solid #444',fontSize: 25 }}>
         <NavLink
