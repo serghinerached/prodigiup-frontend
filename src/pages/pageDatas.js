@@ -60,6 +60,8 @@ const DivPageDatas = () => {
     const start = new Date(openedStr);
     const end = new Date(resolvedStr);
 
+    if (end <= start) return "0.00"; // sécurité
+
     let totalMs = 0;
     let current = new Date(start);
 
@@ -69,8 +71,12 @@ const DivPageDatas = () => {
       if (day !== 0 && day !== 6) {
         const endOfDay = new Date(current);
         endOfDay.setHours(23, 59, 59, 999);
+
         const segmentEnd = end < endOfDay ? end : endOfDay;
-        totalMs += (segmentEnd - current);
+
+        if (segmentEnd > current) {
+          totalMs += (segmentEnd - current);
+        }
       }
 
       current.setHours(0, 0, 0, 0);
@@ -78,7 +84,8 @@ const DivPageDatas = () => {
     }
 
     const days = totalMs / (1000 * 60 * 60 * 24);
-    return Number(days).toFixed(2);
+
+    return Number(days).toFixed(2); // retourne toujours "0.00" min
   };
 
   const fetchPerformance1s = async () => {
@@ -94,7 +101,9 @@ const DivPageDatas = () => {
           const week = getISOWeek(opened);
 
           // ✅ ON UTILISE LA VALEUR DE LA DB
-          const mttr8days = inc.mttr8days || "";
+        const mttr8days = inc.mttr8days !== null && inc.mttr8days !== undefined
+          ? inc.mttr8days
+          : "";
 
           return [
             inc.number || "",
@@ -141,7 +150,7 @@ const DivPageDatas = () => {
       });
 
       const result = await response.text();
-      alert(result);
+      alert("Result: " + result);
 
       setDateLastImport(new Date().toLocaleString());
 
@@ -170,12 +179,12 @@ const DivPageDatas = () => {
     if(index===0) return row;
 
     const [number, service, weekStr, openedStr, resolvedStr, mttr8days] = row;
-    const opened = resolvedStr ? new Date(resolvedStr) : null;
+    const resolved = resolvedStr ? new Date(resolvedStr) : null;
 
     if(!resolvedStr || resolvedStr === "") return null;
 
-    if(appliedYear && opened && opened.getFullYear().toString() !== appliedYear) return null;
-    if(appliedMonth && opened && (opened.getMonth()+1).toString().padStart(2,'0') !== appliedMonth) return null;
+    if(appliedYear && resolved && resolved.getFullYear().toString() !== appliedYear) return null;
+    if(appliedMonth && resolved && (resolved.getMonth()+1).toString().padStart(2,'0') !== appliedMonth) return null;
     if(appliedWeek && weekStr.toString() !== appliedWeek) return null;
     if(appliedService && appliedService !== "" && service !== appliedService) return null;
 
@@ -202,14 +211,20 @@ const DivPageDatas = () => {
   filteredData2.slice(1).forEach(row => {
     const [number, service, week, openedStr, resolvedStr, mttr8days] = row;
 
-    if (!service || !mttr8days) return;
+    // 👉 remplacer service vide par "UNKNOWN"
+    const serviceKey = service && service.trim() !== "" ? service : "UNKNOWN";
 
-    if (!mttrByService[service]) {
-      mttrByService[service] = { count: 0, total: 0 };
+    if (!mttrByService[serviceKey]) {
+      mttrByService[serviceKey] = { count: 0, total: 0 };
     }
 
-    mttrByService[service].count += 1;
-    mttrByService[service].total += parseFloat(mttr8days);
+    // ✅ on compte TOUJOURS l'incident
+    mttrByService[serviceKey].count += 1;
+
+    // ✅ on ajoute au total SEULEMENT si mttr existe
+    if (mttr8days !== "" && mttr8days !== null && mttr8days !== undefined) {
+      mttrByService[serviceKey].total += parseFloat(mttr8days);
+    }
   });
 
   const servicesToDisplay = appliedService2
@@ -217,16 +232,25 @@ const DivPageDatas = () => {
     : Object.keys(mttrByService).sort();
 
   let totalIncidents = 0;
-  let totalMttr = 0;
 
   Object.values(mttrByService).forEach(s => {
     totalIncidents += s.count;
-    totalMttr += s.total;
   });
 
-  const globalMttr = totalIncidents
-    ? (totalMttr / totalIncidents).toFixed(2)
-    : "";
+  // ✅ NOUVEAU calcul global (moyenne des services)
+  let totalServiceMttr = 0;
+  let serviceCount = 0;
+
+  Object.values(mttrByService).forEach(s => {
+    if (s.count > 0) {
+      totalServiceMttr += (s.total / s.count);
+      serviceCount++;
+    }
+  });
+
+  const globalMttr = serviceCount ? (totalServiceMttr / serviceCount).toFixed(2) : "";
+
+    //********************************************* */
 
   return (
     <div style={{ marginLeft:'220px',marginBottom:'5px',textAlign:'left',}}>
@@ -282,17 +306,29 @@ const DivPageDatas = () => {
               </th>
             </tr>
  
-            {filteredData.map((row,i)=>(
-              <tr key={i}>
-                {row.map((cell,j)=>(
-                  i===0
-                    ? <th key={j} style={{border:"1px solid black",backgroundColor:"cyan"}}>{cell}</th>
-                    : <td key={j} style={{border:"1px solid black"}}>
-                        {(j===3||j===4) && cell ? formatDateFR(cell) : cell}
-                      </td>
-                ))}
-              </tr>
-            ))}
+           {filteredData.map((row,i)=>(
+            <tr key={i}>
+              {row.map((cell,j)=>(
+                i===0
+                  ? <th key={j} style={{border:"1px solid black",backgroundColor:"cyan", padding:3 ,textAlign:"center"}}>{cell}</th>
+                  : <td
+                      key={j}
+                      style={{
+                        border: "1px solid black",
+                        textAlign: (j === 2 || j === 5) ? "center" : "left",
+                        padding: 3,
+
+                        // ✅ couleur rouge si MTTR >= 8
+                        ...(j === 5 && parseFloat(cell) >= 8
+                          ? { background:"red",color: "white", fontWeight: "bold" }
+                          : {})
+                      }}
+                    >
+                      {(j === 3 || j === 4) && cell ? formatDateFR(cell) : cell}
+                    </td>
+              ))}
+            </tr>
+          ))}
  
           </tbody>
         </table>
@@ -342,24 +378,36 @@ const DivPageDatas = () => {
               <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:3 }}>{globalMttr}</th>
             </tr>
 
-            {servicesToDisplay.map((cot, index) => (
-              <tr key={index} >
-                <td style={{ border:"1px solid black", padding:3, textAlign:"left" }}>
-                  {cot}
-                </td>
+            {servicesToDisplay.map((cot, index) => {
+              const avgMttr = mttrByService[cot]
+                ? (mttrByService[cot].total / mttrByService[cot].count)
+                : null;
 
-                <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
-                  {mttrByService[cot]?.count || 0}
-                </td>
+              return (
+                <tr key={index}>
+                  <td style={{ border:"1px solid black", padding:3, textAlign:"left" }}>
+                    {cot}
+                  </td>
 
-                <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
-                  {mttrByService[cot]
-                    ? (mttrByService[cot].total / mttrByService[cot].count).toFixed(2)
-                    : ""}
-                </td>
+                  <td style={{ border:"1px solid black", padding:3, textAlign:"center" }}>
+                    {mttrByService[cot]?.count || 0}
+                  </td>
 
-              </tr>
-            ))}
+                  <td
+                    style={{
+                      border:"1px solid black",
+                      padding:3,
+                      textAlign:"center",
+                      background: avgMttr !== null && avgMttr >= 8 ? "red" : "white",
+                      color: avgMttr !== null && avgMttr >= 8 ? "white" : "black",
+                      fontWeight: avgMttr !== null && avgMttr >= 8 ? "bold" : "normal"
+                    }}
+                  >
+                    {avgMttr !== null ? avgMttr.toFixed(2) : ""}
+                  </td>
+                </tr>
+              );
+            })}
 
           </tbody>
         </table>
