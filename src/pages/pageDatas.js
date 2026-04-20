@@ -191,6 +191,24 @@ const DivPageDatas = () => {
     return row;
   }).filter(Boolean);
 
+
+  const incidents = filteredData.slice(1); // sans le header
+
+  const totalIncidentsTable1 = incidents.length;
+
+  let totalMttrTable1 = 0;
+
+  incidents.forEach(row => {
+    const mttr = parseFloat(row[5]);
+    if (!isNaN(mttr)) {
+      totalMttrTable1 += mttr;
+    }
+  });
+
+const avgMttrTable1 = totalIncidentsTable1
+  ? (totalMttrTable1 / totalIncidentsTable1).toFixed(2)
+  : "";
+
   const filteredData2 = excelData.map((row,index) => {
     if(index===0) return row;
 
@@ -255,7 +273,7 @@ const DivPageDatas = () => {
   return (
     <div style={{ marginLeft:'220px',marginBottom:'5px',textAlign:'left',}}>
 
-      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>PERFORMANCE - Datas</h2>
+      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>INCIDENTS - Datas</h2>
 
       <input type="file" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} /> 
       <button style={styles.btnImport} onClick={handleClick}>Import</button> 
@@ -305,30 +323,58 @@ const DivPageDatas = () => {
  
               </th>
             </tr>
- 
-           {filteredData.map((row,i)=>(
-            <tr key={i}>
-              {row.map((cell,j)=>(
-                i===0
-                  ? <th key={j} style={{border:"1px solid black",backgroundColor:"cyan", padding:3 ,textAlign:"center"}}>{cell}</th>
-                  : <td
-                      key={j}
-                      style={{
-                        border: "1px solid black",
-                        textAlign: (j === 2 || j === 5) ? "center" : "left",
-                        padding: 3,
 
-                        // ✅ couleur rouge si MTTR >= 8
-                        ...(j === 5 && parseFloat(cell) >= 8
-                          ? { background:"red",color: "white", fontWeight: "bold" }
-                          : {})
-                      }}
-                    >
-                      {(j === 3 || j === 4) && cell ? formatDateFR(cell) : cell}
-                    </td>
+            {/* HEADER */}
+            <tr>
+              {filteredData[0]?.map((cell, j) => (
+                <th
+                  key={j}
+                  style={{
+                    border: "1px solid black",
+                    backgroundColor: "cyan",
+                    padding: 3,
+                    textAlign: "center"
+                  }}
+                >
+                  {cell}
+                </th>
               ))}
             </tr>
-          ))}
+
+            {/* ✅ LIGNE TOTAL JUSTE APRÈS */}
+            <tr>
+              <th colSpan={4} style={{ textAlign:"center", border:"1px solid black", padding:3 }}></th>
+
+              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:3 }}>
+                {totalIncidentsTable1}
+              </th>
+
+              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:3 }}>
+                {avgMttrTable1}
+              </th>
+            </tr>
+
+            {/* DATA (sans le header) */}
+            {filteredData.slice(1).map((row,i)=>(
+              <tr key={i}>
+                {row.map((cell,j)=>(
+                  <td
+                    key={j}
+                    style={{
+                      border: "1px solid black",
+                      textAlign: (j === 2 || j === 5) ? "center" : "left",
+                      padding: 3,
+
+                      ...(j === 5 && parseFloat(cell) >= 8
+                        ? { background:"red", color: "white", fontWeight: "bold" }
+                        : {})
+                    }}
+                  >
+                    {(j === 3 || j === 4) && cell ? formatDateFR(cell) : cell}
+                  </td>
+                ))}
+              </tr>
+            ))}
  
           </tbody>
         </table>
@@ -368,7 +414,7 @@ const DivPageDatas = () => {
 
             <tr>
               <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Service</th>
-              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Incidents</th>
+              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Resolved</th>
               <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:3 }}>Mttr8Days</th>
             </tr>
 

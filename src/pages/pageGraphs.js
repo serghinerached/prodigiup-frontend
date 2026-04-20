@@ -22,6 +22,20 @@ const DivPageGraphs = () => {
     return date.toLocaleDateString('fr-FR');
   };
 
+
+  const incidents = excelData.slice(1).filter(row => row[2]); // resolved non vide
+  const incidentsByYearMonth = {};
+
+  incidents.forEach(row => {
+    const resolved = new Date(row[2]);
+    const year = resolved.getFullYear().toString();
+    const month = String(resolved.getMonth() + 1).padStart(2, "0");
+
+    const key = `${year}-${month}`;
+
+    incidentsByYearMonth[key] = (incidentsByYearMonth[key] || 0) + 1;
+  });
+
   const calculateMttr8Days = (openedStr, resolvedStr) => {
     if (!openedStr || !resolvedStr) return "";
 
@@ -117,7 +131,7 @@ const DivPageGraphs = () => {
   return (
     <div style={{ marginLeft:'220px',marginBottom:'5px',textAlign:'left',}}>
 
-      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>PERFORMANCE - Graphs</h2>
+      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>INCIDENTS - Graphs</h2>
 
       <input type="file" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} /> 
       <button style={styles.btnImport} onClick={handleClick}>Import</button> 
@@ -126,6 +140,7 @@ const DivPageGraphs = () => {
 
       <div >
 
+      {/* TABLEAU 1 */}
       <table style={{borderCollapse: "collapse"}}>
         <thead>
           <tr>  
@@ -133,29 +148,65 @@ const DivPageGraphs = () => {
           </tr>
           <tr>  
             <th></th>
-             {tabLibMonth.map((m,i)=>
-                <th key={i} value={String(i+1).padStart(2,'0')} style={{textAlign:"center",border:"1px solid black",backgroundColor:"cyan",padding:"3px"}}>{m}</th>
-              )} 
+            {tabLibMonth.map((m,i)=>
+              <th key={i} style={{textAlign:"center",border:"1px solid black",backgroundColor:"cyan",padding:"3px"}}>
+                {m}
+              </th>
+            )}
+            <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"lightgreen",padding:"3px"}}>
+              Total
+            </th>
           </tr>
         </thead>
+        
         <tbody>
 
-          {tabYear.map((y,i)=>
-            <tr key={i} value={String(i+1).padStart(2,'0')}>
-              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:3}}>{y}</th>
-              {tabLibMonth.map((m,i)=>
-                <td key={i} value={String(i+1).padStart(2,'0')} style={{textAlign:"center", border:"1px solid black",padding:"3px"}}>{i}</td>
-              )} 
-            </tr>
-          )} 
+          {tabYear.map((y, i) => {
 
-         
+            let totalYear = 0;
+
+            return (
+              <tr key={i}>
+                <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:3}}>
+                  {y}
+                </th>
+
+                {tabLibMonth.map((m, j) => {
+                  const month = String(j + 1).padStart(2,'0');
+                  const key = `${y}-${month}`;
+                  const value = incidentsByYearMonth[key] || 0;
+
+                  totalYear += value;
+
+                  return (
+                    <td key={j} style={{textAlign:"center", border:"1px solid black",padding:"3px"}}>
+                      {value === 0 ? "" : value}
+                    </td>
+                  );
+                })}
+
+                {/* ✅ COLONNE TOTAL */}
+                <td style={{
+                  textAlign:"center",
+                  border:"1px solid black",
+                  backgroundColor:"lightgreen",
+                  fontWeight:"bold",
+                  padding:"3px"
+                }}>
+                  {totalYear}
+                </td>
+
+              </tr>
+            );
+          })}
+
         </tbody>
       </table>
 
       <br /> <br />
 
 
+      {/* TABLEAU 2 */}
       <table style={{borderCollapse: "collapse"}}>
         <thead>
           <tr>  
