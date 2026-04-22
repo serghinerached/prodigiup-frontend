@@ -20,6 +20,7 @@ const tabListCots = [
     "Reliability Workbench (RWB) ::C2A",
     "SaberRD ::C2A",
     "Scade ::C2A",
+    "SEER-MFG ::C2A",
     "Star CCM+ ::C2A",
     "Test Management System ::C2A",
     "TeXstudio ::C2A",

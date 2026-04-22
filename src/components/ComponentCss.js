@@ -101,11 +101,29 @@ export const styles = {
     border:'1px solid black',
     padding:5,
   },
-  tableIncidents:{
-    borderCollapse : 'collapse',
-    marginLeft:'230px',
+ 
 
-  },
+   tableStyle :{
+      marginLeft: "230px",
+      width: "80%",
+      borderCollapse: "collapse",
+      tableLayout: "auto"
+    },
+  
+    thStyle : {
+      position: "sticky",
+      top: 0,
+      backgroundColor: "cyan",
+      border: "1px solid black",
+      padding: "5px",
+      zIndex: 1
+    },
+  
+    tdStyle :{
+      border: "1px solid black",
+      padding: "3px",
+      whiteSpace: "nowrap",   // empêche le retour à la ligne
+    },
  
    tdIncidentsCol4:{
     border:'1px solid black',

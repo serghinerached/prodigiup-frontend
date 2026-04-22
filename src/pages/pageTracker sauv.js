@@ -49,7 +49,7 @@ const DivPageTracker = () => {
       const data = await response.json();
 
       const tableData = [
-        ["Week","Opened","Number","Type","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"],
+        ["Week","Opened","Number","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"],
         ...data.map(inc => {
           const week = getISOWeek(inc.opened);
           const opened = inc.opened || "";
@@ -57,11 +57,10 @@ const DivPageTracker = () => {
             week,
             opened,
             inc.number || "",
-            "incident",
             inc.assignedTo || "",
             inc.state || "",
             inc.assignmentGroup || "",
-            inc.requestedFor || "",
+            inc.requestedfor || "",
             inc.resolved || "",
             inc.closed || "",
             inc.service || ""
@@ -73,7 +72,7 @@ const DivPageTracker = () => {
 
     } catch (error) {
       console.error("Erreur fetch incidents :", error);
-      setExcelData([["Week","Opened","Number","type","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"]]);
+      setExcelData([["Week","Opened","Number","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"]]);
     }
   };
 
@@ -128,7 +127,7 @@ const DivPageTracker = () => {
   const filteredData = excelData.map((row,index) => {
     if(index===0) return row; // header
 
-    const [weekStr, openedStr, number, type,assignedTo, state, assignmentGroup, requestedFor, resolvedStr, closedStr, service] = row;
+    const [openedStr, weekStr, number, assignedTo, state, assignmentGroup, requestedFor, resolvedStr, closedStr, service] = row;
     const opened = openedStr ? new Date(openedStr) : null;
     const week = weekStr || "";
 
@@ -143,9 +142,6 @@ const DivPageTracker = () => {
 
     return row;
   }).filter(Boolean);
-  
-
-  //*************************************** */
 
   return (
     <div style={styles.divImport}>
@@ -196,44 +192,22 @@ const DivPageTracker = () => {
 
       <br /><br />
 
-      <table style={styles.tableStyle}>
+      <table style={styles.tableIncidents}>
         <tbody>
-          {filteredData.map((row, rowIndex) => (
+          {filteredData.map((row,rowIndex)=> (
             <tr key={rowIndex}>
-              {row.map((cell, cellIndex) =>
-                rowIndex === 0 ? (
-                  <th key={cellIndex} style={styles.thStyle}>
-                    {cell}
-                  </th>
-                ) : (
-                  <td
-                    key={cellIndex}
-                    style={{
-                      border: "1px solid black",
-                      padding: "5px",
-                      whiteSpace: "nowrap",
-                      textAlign:
-                        cellIndex === 3 || cellIndex === 7 || cellIndex === 10
-                          ? "left"
-                          : "center",
-                      maxWidth:
-                        cellIndex === 7 || cellIndex === 10 ? "150px" : "none",
-                      overflow:
-                        cellIndex === 7 || cellIndex === 10 ? "hidden" : "visible",
-                      textOverflow:
-                        cellIndex === 7 || cellIndex === 10 ? "ellipsis" : "clip"
-                    }}
-                  >
-                    {(cellIndex === 1 || cellIndex === 8 || cellIndex === 9) && cell
-                      ? formatDateFR(cell)
-                      : cell}
-                  </td>
-                )
-              )}
+              {row.map((cell,cellIndex)=> (
+                rowIndex===0
+                  ? <th key={cellIndex} style={{ textAlign:"center", border:"1px solid black", backgroundColor:"cyan", padding:5 }}>{cell}</th>
+                  : <td key={cellIndex} style={{ border:"1px solid black", padding:5 }}>
+                      {(cellIndex===1 || cellIndex ===7 || cellIndex ===8) && cell ? formatDateFR(cell) : cell}
+                    </td>
+              ))}
             </tr>
           ))}
         </tbody>
       </table>
+
     </div>
   );
 };
