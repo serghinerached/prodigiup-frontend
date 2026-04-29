@@ -4,7 +4,9 @@ import { useState } from "react";
 
 function Sidebar({ isMenuOpen, setIsMenuOpen }) {
 
-  const [openPerformance, setOpenPerformance] = useState(false);
+  const [openTracker, setOpenTracker] = useState(false);
+  const [openIncidents, setOpenIncidents] = useState(false);
+
 
   return (
 
@@ -43,24 +45,12 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
         </NavLink>
       </li>
 
-      <li style={{ padding: '15px 0', borderBottom: '1px solid #444',fontSize: 25 }}>
-        <NavLink
-          to="/tracker"
-          style={({ isActive }) => ({
-            color: isActive ? "cyan" : "white",
-            textDecoration: "none"
-          })}
-        >
-          Tracker
-        </NavLink>
-      </li>
-
 
       <li style={{ padding: '15px 0', borderBottom: '1px solid #444', fontSize: 25 }}>
 
         {/* Titre cliquable */}
         <div
-          onClick={() => setOpenPerformance(!openPerformance)}
+          onClick={() => setOpenTracker(!openTracker)}
           style={{
             color: "white",
             cursor: "pointer",
@@ -69,14 +59,69 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
             alignItems: "center"
           }}
         >
-          Performance
+          Tracker
           <span style={{ fontSize: 18 }}>
-            {openPerformance ? "▼" : "▶"}
+            {openTracker ? "▼" : "▶"}
           </span>
         </div>
 
         {/* Sous-menu */}
-        {openPerformance && (
+        {openTracker && (
+          <ul style={{ listStyle: "none", paddingLeft: 15, marginTop: 10 }}>
+
+            <li style={{ marginBottom: 5 }}>
+              <NavLink
+                to="/tracker"
+                style={({ isActive }) => ({
+                  color: isActive ? "cyan" : "white",
+                  textDecoration: "none",
+                  fontSize: 20
+                })}
+              >
+                Datas
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink
+                to="/tracker"
+                style={({ isActive }) => ({
+                  color: isActive ? "cyan" : "white",
+                  textDecoration: "none",
+                  fontSize: 20
+                })}
+              >
+                Reporting
+              </NavLink>
+            </li>
+
+          </ul>
+        )}
+
+      </li>
+
+
+      <li style={{ padding: '15px 0', borderBottom: '1px solid #444', fontSize: 25 }}>
+
+        {/* Titre cliquable */}
+        <div
+          onClick={() => setOpenIncidents(!openIncidents)}
+          style={{
+            color: "white",
+            cursor: "pointer",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
+        >
+          Incidents
+          <span style={{ fontSize: 18 }}>
+            {openIncidents ? "▼" : "▶"}
+          </span>
+        </div>
+
+        {/* Sous-menu */}
+        {openIncidents && (
           <ul style={{ listStyle: "none", paddingLeft: 15, marginTop: 10 }}>
 
             <li style={{ marginBottom: 5 }}>

@@ -23,48 +23,37 @@ const DivPageTracker = () => {
   const tabNumWeek = Array.from({ length: 52 }, (_, i) => i + 1);
   const tabType = ["Incident", "Request"];
 
-  // Calculer la semaine ISO
-  const getISOWeek = (dateStr) => {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
-    const target = new Date(date.valueOf());
-    const dayNr = (date.getDay() + 6) % 7; // lundi=0
-    target.setDate(target.getDate() - dayNr + 3);
-    const firstThursday = new Date(target.getFullYear(),0,4);
-    const weekNumber = 1 + Math.round(((target - firstThursday)/86400000 - 3 + ((firstThursday.getDay()+6)%7))/7);
-    return weekNumber;
-  };
-
-  // Formatter date dd/mm/yyyy
+  // Formatter date
   const formatDateFR = (dateStr) => {
     if (!dateStr) return "";
     const date = new Date(dateStr);
     return date.toLocaleDateString('fr-FR');
   };
 
-  // Charger les incidents depuis l'API
+  // FETCH DATA
   const fetchIncidents = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/incidents`);
+      const response = await fetch(`${API_URL}/api/tracker`);
       const data = await response.json();
+
+      // 🔥 TRI décroissant sur "opened"
+      data.sort((a, b) => new Date(b.opened) - new Date(a.opened));
 
       const tableData = [
         ["Week","Opened","Number","Type","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"],
         ...data.map(inc => {
-          const week = getISOWeek(inc.opened);
-          const opened = inc.opened || "";
           return [
-            week,
-            opened,
-            inc.number || "",
-            "incident",
-            inc.assignedTo || "",
-            inc.state || "",
-            inc.assignmentGroup || "",
-            inc.requestedFor || "",
-            inc.resolved || "",
-            inc.closed || "",
-            inc.service || ""
+            inc.week ?? "",
+            inc.opened ?? "",
+            inc.number ?? "",
+            inc.type ?? "",
+            inc.assignedTo ?? "",
+            inc.state ?? "",
+            inc.assignmentGroup ?? "",
+            inc.requestedFor ?? "",
+            inc.resolved ?? "",
+            inc.closed ?? "",
+            inc.service ?? ""
           ];
         })
       ];
@@ -73,7 +62,7 @@ const DivPageTracker = () => {
 
     } catch (error) {
       console.error("Erreur fetch incidents :", error);
-      setExcelData([["Week","Opened","Number","type","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"]]);
+      setExcelData([["Week","Opened","Number","Type","Assigned To","State","Assignment Group","Requested For","Resolved","Closed","Service"]]);
     }
   };
 
@@ -98,13 +87,18 @@ const DivPageTracker = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch(`${API_URL}/api/incidents/import-excel`, {
+      const response = await fetch(`${API_URL}/api/tracker/import-excel`, {
         method: "POST",
         body: formData,
       });
 
       const result = await response.text();
-      alert(result);
+      console.log(result);
+
+      if (!response.ok) {
+        alert("Erreur import: " + result);
+        return;
+      }
 
       setDateLastImport(new Date().toLocaleString());
 
@@ -116,7 +110,7 @@ const DivPageTracker = () => {
     event.target.value = null;
   };
 
-  // Appliquer les filtres au clic sur Filter
+  // Appliquer filtres
   const handleFilterClick = () => {
     setAppliedYear(selectedYear);
     setAppliedMonth(selectedMonth);
@@ -124,28 +118,22 @@ const DivPageTracker = () => {
     setAppliedType(selectedType);
   };
 
-  // Filtrage côté front
+  // FILTRAGE
   const filteredData = excelData.map((row,index) => {
-    if(index===0) return row; // header
+    if(index===0) return row;
 
     const [weekStr, openedStr, number, type,assignedTo, state, assignmentGroup, requestedFor, resolvedStr, closedStr, service] = row;
+
     const opened = openedStr ? new Date(openedStr) : null;
     const week = weekStr || "";
 
     if(appliedYear && opened && opened.getFullYear().toString() !== appliedYear) return null;
     if(appliedMonth && opened && (opened.getMonth()+1).toString().padStart(2,'0') !== appliedMonth) return null;
     if(appliedWeek && week.toString() !== appliedWeek) return null;
-
-    if(appliedType && appliedType!=="") {
-      if(appliedType==="Incident" && !number.toLowerCase().includes("inc")) return null;
-      if(appliedType==="Request" && !number.toLowerCase().includes("req")) return null;
-    }
+    if(appliedType && type !== appliedType) return null;
 
     return row;
   }).filter(Boolean);
-  
-
-  //*************************************** */
 
   return (
     <div style={styles.divImport}>

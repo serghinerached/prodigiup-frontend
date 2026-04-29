@@ -37,81 +37,28 @@ const DivPageDatas = () => {
   const tabService = ["DYMOLA ::C2A","Eclipse ::C2A","FLOWMASTER ::C2A","Hyperworks_Suite_AH","SaberRD ::C2A","Scade ::C2A",
     "TeXstudio ::C2A","Visual Studio ::C2A"];
 
-  const getISOWeek = (dateStr) => {
-    if (!dateStr) return "";
-    const date = new Date(dateStr);
-    const target = new Date(date.valueOf());
-    const dayNr = (date.getDay() + 6) % 7;
-    target.setDate(target.getDate() - dayNr + 3);
-    const firstThursday = new Date(target.getFullYear(),0,4);
-    const weekNumber = 1 + Math.round(((target - firstThursday)/86400000 - 3 + ((firstThursday.getDay()+6)%7))/7);
-    return weekNumber;
-  };
-
+  
   const formatDateFR = (dateStr) => {
     if (!dateStr) return "";
     const date = new Date(dateStr);
     return date.toLocaleDateString('fr-FR');
   };
 
-  const calculateMttr8Days = (openedStr, resolvedStr) => {
-    if (!openedStr || !resolvedStr) return "";
-
-    const start = new Date(openedStr);
-    const end = new Date(resolvedStr);
-
-    if (end <= start) return "0.00"; // sécurité
-
-    let totalMs = 0;
-    let current = new Date(start);
-
-    while (current < end) {
-      const day = current.getDay();
-
-      if (day !== 0 && day !== 6) {
-        const endOfDay = new Date(current);
-        endOfDay.setHours(23, 59, 59, 999);
-
-        const segmentEnd = end < endOfDay ? end : endOfDay;
-
-        if (segmentEnd > current) {
-          totalMs += (segmentEnd - current);
-        }
-      }
-
-      current.setHours(0, 0, 0, 0);
-      current.setDate(current.getDate() + 1);
-    }
-
-    const days = totalMs / (1000 * 60 * 60 * 24);
-
-    return Number(days).toFixed(2); // retourne toujours "0.00" min
-  };
-
   const fetchPerformance1s = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/performance1s`);
+      const response = await fetch(`${API_URL}/api/tracker`);
       const data = await response.json();
 
       const tableData = [
         ["Number","Service","Week","Opened","Resolved","Mttr8Days"],
         ...data.map(inc => {
-          const opened = inc.opened || "";
-          const resolved = inc.resolved || "";
-          const week = getISOWeek(opened);
-
-          // ✅ ON UTILISE LA VALEUR DE LA DB
-        const mttr8days = inc.mttr8days !== null && inc.mttr8days !== undefined
-          ? inc.mttr8days
-          : "";
-
           return [
             inc.number || "",
             inc.service || "",
-            week,
-            opened,
-            resolved,
-            mttr8days
+            inc.week || "",
+            inc.opened || "",
+            inc.resolved || "",
+            inc.mttr || ""
           ];
         })
       ];
@@ -133,35 +80,7 @@ const DivPageDatas = () => {
   const handleSelectMonthChange = (event) => setSelectedMonth(event.target.value);
   const handleSelectWeekChange = (event) => setSelectedWeek(event.target.value);
   const handleSelectServiceChange = (event) => setSelectedService(event.target.value);
-
-  const handleClick = () => hiddenFileInput.current.click();
-
-  const handleChange = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    try {
-      const response = await fetch(`${API_URL}/api/performance1s/import-excel`, {
-        method: "POST",
-        body: formData,
-      });
-
-      const result = await response.text();
-      alert("Result: " + result);
-
-      setDateLastImport(new Date().toLocaleString());
-
-    } catch (error) {
-      console.error(error);
-      alert("Erreur lors de l'import");
-    }
-
-    event.target.value = null;
-  };
-
+  
   const handleFilterClick = () => {
     setAppliedYear(selectedYear);
     setAppliedMonth(selectedMonth);
@@ -275,10 +194,8 @@ const avgMttrTable1 = totalIncidentsTable1
 
       <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>INCIDENTS - Datas</h2>
 
-      <input type="file" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} /> 
-      <button style={styles.btnImport} onClick={handleClick}>Import</button> 
       <p style={styles.p2}> Last import : {dateLastImport}</p>
-      <br /> <br />
+      <br /> 
 
       <div style={{ display: 'flex'}}>
 
