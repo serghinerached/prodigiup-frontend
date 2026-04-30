@@ -274,22 +274,36 @@ const avgMttrTable1 = totalIncidentsTable1
             {/* DATA (sans le header) */}
             {filteredData.slice(1).map((row,i)=>(
               <tr key={i}>
-                {row.map((cell,j)=>(
-                  <td
-                    key={j}
-                    style={{
-                      border: "1px solid black",
-                      textAlign: (j === 2 || j === 5) ? "center" : "left",
-                      padding: 3,
+                {row.map((cell,j)=>{
 
-                      ...(j === 5 && parseFloat(cell) >= 8
-                        ? { background:"red", color: "white", fontWeight: "bold" }
-                        : {})
-                    }}
-                  >
-                    {(j === 3 || j === 4) && cell ? formatDateFR(cell) : cell}
-                  </td>
-                ))}
+                  const value = parseFloat(cell);
+
+                  let styleColor = {};
+
+                  if (j === 5 && !isNaN(value)) {
+                    if (value >= 8) {
+                      styleColor = { background: "red", color: "white", fontWeight: "bold" };
+                    } else if (value >= 6) {
+                      styleColor = { background: "orange", color: "black", fontWeight: "bold" };
+                    } else if (value >= 3) {
+                      styleColor = { background: "yellow", color: "black" };
+                    }
+                  }
+
+                  return (
+                    <td
+                      key={j}
+                      style={{
+                        border: "1px solid black",
+                        textAlign: (j === 2  || j === 3  || j === 4 || j === 5) ? "center" : "left",
+                        padding: 3,
+                        ...styleColor
+                      }}
+                    >
+                      {(j === 3 || j === 4) && cell ? formatDateFR(cell) : cell}
+                    </td>
+                  );
+                })}
               </tr>
             ))}
  
@@ -356,18 +370,36 @@ const avgMttrTable1 = totalIncidentsTable1
                     {mttrByService[cot]?.count || 0}
                   </td>
 
-                  <td
-                    style={{
-                      border:"1px solid black",
-                      padding:3,
-                      textAlign:"center",
-                      background: avgMttr !== null && avgMttr >= 8 ? "red" : "white",
-                      color: avgMttr !== null && avgMttr >= 8 ? "white" : "black",
-                      fontWeight: avgMttr !== null && avgMttr >= 8 ? "bold" : "normal"
-                    }}
-                  >
-                    {avgMttr !== null ? avgMttr.toFixed(2) : ""}
-                  </td>
+                 <td
+                  style={{
+                    border: "1px solid black",
+                    padding: 3,
+                    textAlign: "center",
+
+                    background:
+                      avgMttr !== null
+                        ? avgMttr >= 8
+                          ? "red"
+                          : avgMttr >= 6
+                          ? "orange"
+                          : avgMttr >= 3
+                          ? "yellow"
+                          : "white"
+                        : "white",
+
+                    color:
+                      avgMttr !== null && avgMttr >= 8
+                        ? "white"
+                        : "black",
+
+                    fontWeight:
+                      avgMttr !== null && avgMttr >= 6
+                        ? "bold"
+                        : "normal"
+                  }}
+                >
+                  {avgMttr !== null ? avgMttr.toFixed(2) : ""}
+                </td>
                 </tr>
               );
             })}

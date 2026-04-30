@@ -36,32 +36,6 @@ const DivPageGraphs = () => {
     incidentsByYearMonth[key] = (incidentsByYearMonth[key] || 0) + 1;
   });
 
-  const calculateMttr8Days = (openedStr, resolvedStr) => {
-    if (!openedStr || !resolvedStr) return "";
-
-    const start = new Date(openedStr);
-    const end = new Date(resolvedStr);
-
-    let totalMs = 0;
-    let current = new Date(start);
-
-    while (current < end) {
-      const day = current.getDay();
-
-      if (day !== 0 && day !== 6) {
-        const endOfDay = new Date(current);
-        endOfDay.setHours(23, 59, 59, 999);
-        const segmentEnd = end < endOfDay ? end : endOfDay;
-        totalMs += (segmentEnd - current);
-      }
-
-      current.setHours(0, 0, 0, 0);
-      current.setDate(current.getDate() + 1);
-    }
-
-    const days = totalMs / (1000 * 60 * 60 * 24);
-    return Number(days).toFixed(2);
-  };
 
   const fetchDatas1 = async () => {
     try {
@@ -73,7 +47,7 @@ const DivPageGraphs = () => {
         ...data.map(inc => {
           const resolved = inc.resolved || "";
           const opened = inc.opened || "";
-          const mttr8days = calculateMttr8Days(opened,resolved);
+          const mttr8days = inc.mttr || "";
           return [
             inc.number || "",
             opened,
@@ -210,7 +184,7 @@ const DivPageGraphs = () => {
       <table style={{borderCollapse: "collapse"}}>
         <thead>
           <tr>  
-            <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"yellow",padding:"3px"}} colSpan={13}>MTTR</th>
+            <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"yellow",padding:"3px"}} colSpan={13}>MTTR / SERVICE</th>
           </tr>
           <tr>  
             <th></th>

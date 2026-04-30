@@ -93,7 +93,6 @@ const DivPageTracker = () => {
       });
 
       const result = await response.text();
-      console.log(result);
 
       if (!response.ok) {
         alert("Erreur import: " + result);
@@ -101,6 +100,7 @@ const DivPageTracker = () => {
       }
 
       setDateLastImport(new Date().toLocaleString());
+      alert("Importation terminée");
 
     } catch (error) {
       console.error(error);
@@ -108,6 +108,7 @@ const DivPageTracker = () => {
     }
 
     event.target.value = null;
+
   };
 
   // Appliquer filtres
