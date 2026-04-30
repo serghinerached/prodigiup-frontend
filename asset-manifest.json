@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/prodigiup-frontend/static/css/main.e6c13ad2.css",
-    "main.js": "/prodigiup-frontend/static/js/main.1ede5749.js",
+    "main.js": "/prodigiup-frontend/static/js/main.194bf7c3.js",
     "static/js/453.20359781.chunk.js": "/prodigiup-frontend/static/js/453.20359781.chunk.js",
     "static/media/banner.jpg": "/prodigiup-frontend/static/media/banner.14eb62064aed510119e6.jpg",
     "static/media/logoProdigiup.png": "/prodigiup-frontend/static/media/logoProdigiup.7d575f79f347008a9e53.png",
     "index.html": "/prodigiup-frontend/index.html",
     "main.e6c13ad2.css.map": "/prodigiup-frontend/static/css/main.e6c13ad2.css.map",
-    "main.1ede5749.js.map": "/prodigiup-frontend/static/js/main.1ede5749.js.map",
+    "main.194bf7c3.js.map": "/prodigiup-frontend/static/js/main.194bf7c3.js.map",
     "453.20359781.chunk.js.map": "/prodigiup-frontend/static/js/453.20359781.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.1ede5749.js"
+    "static/js/main.194bf7c3.js"
   ]
 }
