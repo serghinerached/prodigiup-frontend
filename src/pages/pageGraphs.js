@@ -1,12 +1,32 @@
 import React, { useRef, useState, useEffect } from "react";
 import { styles } from '../components/ComponentCss';
 import listCots from "./listCots";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip
+} from 'chart.js';
+
+import { Line } from 'react-chartjs-2';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Legend,
+  Tooltip
+);
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const DivPageGraphs = () => {
 
-  const [excelData, setExcelData] = useState([]);
+  const [incidentsDatas, setIncidentsDatas] = useState([]);
   const [dateLastImport, setDateLastImport] = useState("");
   const hiddenFileInput = useRef(null);
   const tabYear = ["2022", "2023", "2024", "2025","2026"];
@@ -23,45 +43,43 @@ const DivPageGraphs = () => {
   };
 
 
-  const incidents = excelData.slice(1).filter(row => row[2]); // resolved non vide
+  const IncidentsResolved = incidentsDatas.slice(1).filter(row => row[1]);
   const incidentsByYearMonth = {};
 
-  incidents.forEach(row => {
-    const resolved = new Date(row[2]);
+  IncidentsResolved.forEach(row => {
+      const resolved = new Date(row[1]); // ✅ FIX
     const year = resolved.getFullYear().toString();
     const month = String(resolved.getMonth() + 1).padStart(2, "0");
-
     const key = `${year}-${month}`;
-
     incidentsByYearMonth[key] = (incidentsByYearMonth[key] || 0) + 1;
   });
 
 
   const fetchDatas1 = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/performance1s`);
+      const response = await fetch(`${API_URL}/api/tracker`);
       const data = await response.json();
 
       const tableData = [
-        ["Number","Opened","Resolved","Mttr8Days"],
+        ["Number","Resolved","Service","Mttr8Days"],
         ...data.map(inc => {
           const resolved = inc.resolved || "";
-          const opened = inc.opened || "";
+          const service = inc.service || "";
           const mttr8days = inc.mttr || "";
           return [
             inc.number || "",
-            opened,
             resolved,
+            service,
             mttr8days
           ];
         })
       ];
 
-      setExcelData(tableData);
+      setIncidentsDatas(tableData);
 
     } catch (error) {
       console.error("Erreur fetch performance1s :", error);
-      setExcelData([["Number","Service","Week","Opened","Resolved","Mttr8Days"]]);
+      setIncidentsDatas([["Number","Resolved","Service","Mttr8Days"]]);
     }
   };
 
@@ -69,36 +87,123 @@ const DivPageGraphs = () => {
     fetchDatas1();
   }, [dateLastImport]);
 
+  //---mttr
 
-  const handleClick = () => hiddenFileInput.current.click();
+  const mttrByYearMonthService = {};
 
-  const handleChange = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  IncidentsResolved.forEach(row => {
 
-    const formData = new FormData();
-    formData.append("file", file);
+    const resolved = new Date(row[1]); // ✅ FIX
+    const year = resolved.getFullYear().toString();
+    const month = String(resolved.getMonth() + 1).padStart(2, "0");
+    const key = `${year}-${month}`;
 
-    try {
-      const response = await fetch(`${API_URL}/api/performance1s/import-excel`, {
-        method: "POST",
-        body: formData,
-      });
+    const service = row[2]; // ✅ FIX
+    const mttr = parseFloat(row[3]); // OK
 
-      const result = await response.text();
-      alert(result);
+    if (!service || isNaN(mttr)) return;
 
-      setDateLastImport(new Date().toLocaleString());
-
-    } catch (error) {
-      console.error(error);
-      alert("Erreur lors de l'import");
+    if (!mttrByYearMonthService[key]) {
+      mttrByYearMonthService[key] = {};
     }
 
-    event.target.value = null;
-  };
- 
+    if (!mttrByYearMonthService[key][service]) {
+      mttrByYearMonthService[key][service] = [];
+    }
 
+    mttrByYearMonthService[key][service].push(mttr);
+  });
+
+
+  const getAvgMttrMonth = (key) => {
+    const services = mttrByYearMonthService[key];
+    if (!services) return null;
+
+    let sum = 0;
+    let count = 0;
+
+    Object.values(services).forEach(list => {
+      const avgService = list.reduce((a,b)=>a+b,0) / list.length;
+      sum += avgService;
+      count++;
+    });
+
+    return count > 0 ? sum / count : null;
+  };
+
+  //-----graphiques inc-----
+
+  const colors = ["red", "blue", "green", "orange", "grey"];
+
+  const chartData = {
+    labels: tabLibMonth,
+    datasets: tabYear.map((year, index) => {
+      return {
+        label: year,
+        data: tabLibMonth.map((m, j) => {
+          const month = String(j + 1).padStart(2, '0');
+          const key = `${year}-${month}`;
+          return incidentsByYearMonth[key] || 0;
+        }),
+        borderColor: colors[index % colors.length], // ✅ ICI
+        borderWidth: 2,
+        fill: false
+      };
+    })
+  };
+
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  };
+
+  //----graphique mttr-------------
+
+  const mttrChartData = {
+    labels: tabLibMonth,
+    datasets: tabYear.map((year, index) => {
+      return {
+        label: year,
+        data: tabLibMonth.map((m, j) => {
+          const month = String(j + 1).padStart(2, '0');
+          const key = `${year}-${month}`;
+          const value = getAvgMttrMonth(key);
+          return value !== null ? Number(value.toFixed(2)) : null;
+        }),
+        borderColor: colors[index % colors.length],
+        borderWidth: 2,
+        fill: false,
+        tension: 0.3
+      };
+    })
+  };  
+
+  const mttrChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top'
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "MTTR (jours)"
+        }
+      }
+    }
+  };
 
   //*********************** */
 
@@ -107,108 +212,215 @@ const DivPageGraphs = () => {
 
       <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>INCIDENTS - Graphs</h2>
 
-      <input type="file" ref={hiddenFileInput} onChange={handleChange} style={{ display: 'none' }} /> 
-      <button style={styles.btnImport} onClick={handleClick}>Import</button> 
-      <p style={styles.p2}> Last import : {dateLastImport}</p>
-      <br /> <br />
+      <br /> 
 
-      <div >
-
+      
       {/* TABLEAU 1 */}
-      <table style={{borderCollapse: "collapse"}}>
-        <thead>
-          <tr>  
-            <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"yellow",padding:"3px"}} colSpan={13}>INCIDENTS</th>
-          </tr>
-          <tr>  
-            <th></th>
-            {tabLibMonth.map((m,i)=>
-              <th key={i} style={{textAlign:"center",border:"1px solid black",backgroundColor:"cyan",padding:"3px"}}>
-                {m}
-              </th>
-            )}
-            <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"lightgreen",padding:"3px"}}>
-              Total
-            </th>
-          </tr>
-        </thead>
-        
-        <tbody>
+      <div style={{ display: "flex", gap: "40px", alignItems: "flex-start" }}>
 
-          {tabYear.map((y, i) => {
+        <div >
 
-            let totalYear = 0;
-
-            return (
-              <tr key={i}>
-                <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:3}}>
-                  {y}
-                </th>
-
-                {tabLibMonth.map((m, j) => {
-                  const month = String(j + 1).padStart(2,'0');
-                  const key = `${y}-${month}`;
-                  const value = incidentsByYearMonth[key] || 0;
-
-                  totalYear += value;
-
-                  return (
-                    <td key={j} style={{textAlign:"center", border:"1px solid black",padding:"3px"}}>
-                      {value === 0 ? "" : value}
-                    </td>
-                  );
-                })}
-
-                {/* ✅ COLONNE TOTAL */}
-                <td style={{
-                  textAlign:"center",
-                  border:"1px solid black",
-                  backgroundColor:"lightgreen",
-                  fontWeight:"bold",
-                  padding:"3px"
-                }}>
-                  {totalYear}
-                </td>
-
+          <table style={{borderCollapse: "collapse"}}>
+            <thead>
+              <tr>  
+                <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"yellow",padding:"3px"}} colSpan={13}>INCIDENTS</th>
               </tr>
-            );
-          })}
+              <tr>  
+                <th></th>
+                {tabLibMonth.map((m,i)=>
+                  <th key={i} style={{textAlign:"center",border:"1px solid black",backgroundColor:"cyan",padding:"3px"}}>
+                    {m}
+                  </th>
+                )}
+                <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"lightgreen",padding:"3px"}}>
+                  Total
+                </th>
+              </tr>
+            </thead>
+            
+            <tbody>
 
-        </tbody>
-      </table>
+              {tabYear.map((y, i) => {
+
+                let totalYear = 0;
+
+                return (
+                  <tr key={i}>
+                    <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:3}}>
+                      {y}
+                    </th>
+
+                    {tabLibMonth.map((m, j) => {
+                      const month = String(j + 1).padStart(2,'0');
+                      const key = `${y}-${month}`;
+                      const value = incidentsByYearMonth[key] || 0;
+
+                      totalYear += value;
+
+                      return (
+                        <td key={j} style={{textAlign:"center", border:"1px solid black",padding:"3px"}}>
+                          {value === 0 ? "" : value}
+                        </td>
+                      );
+                    })}
+
+                    {/* ✅ COLONNE TOTAL */}
+                    <td style={{
+                      textAlign:"center",
+                      border:"1px solid black",
+                      backgroundColor:"lightgreen",
+                      fontWeight:"bold",
+                      padding:"3px"
+                    }}>
+                      {totalYear}
+                    </td>
+
+                  </tr>
+                );
+              })}
+
+            </tbody>
+          </table>
+        </div>
+
+        {/* GRAPH */}
+      
+        <div style={{ width: "600px" }}>
+          <Line data={chartData} options={chartOptions} />
+        </div>
+
+      </div>
 
       <br /> <br />
 
 
-      {/* TABLEAU 2 */}
-      <table style={{borderCollapse: "collapse"}}>
-        <thead>
-          <tr>  
-            <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"yellow",padding:"3px"}} colSpan={13}>MTTR / SERVICE</th>
-          </tr>
-          <tr>  
-            <th></th>
-             {tabLibMonth.map((m,i)=>
-                <th key={i} value={String(i+1).padStart(2,'0')} style={{textAlign:"center",border:"1px solid black",backgroundColor:"cyan",padding:"3px"}}>{m}</th>
-              )} 
-          </tr>
-        </thead>
+     {/* TABLEAU 2 */}
+     <div style={{ display: "flex", flexDirection: "column", gap: "30px" }}>
+
+      <div>
+        <table style={{borderCollapse: "collapse"}}>
+          <thead>
+            <tr>  
+              <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"yellow",padding:"3px"}} colSpan={13}>MTTR</th>
+            </tr>
+            <tr>  
+              <th></th>
+              {tabLibMonth.map((m,i)=>
+                <th key={i} style={{textAlign:"center",border:"1px solid black",backgroundColor:"cyan",padding:"3px"}}>
+                  {m}
+                </th>
+              )}
+              <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"lightgreen",padding:"3px"}}>
+                Average
+              </th>
+            </tr>
+          </thead>
+          
         <tbody>
 
-          {tabYear.map((y,i)=>
-            <tr key={i} value={String(i+1).padStart(2,'0')}>
-              <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:3}}>{y}</th>
-              {tabLibMonth.map((m,i)=>
-                <td key={i} value={String(i+1).padStart(2,'0')} style={{textAlign:"center", border:"1px solid black",padding:"3px"}}>{i}</td>
-              )} 
-            </tr>
-          )} 
+            {tabYear.map((y, i) => {
 
-         
-        </tbody>
-          </table>
-        
+              let mttrYear = 0;
+              let countMonth = 0;
+
+              return (
+                <tr key={i}>
+                  <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"lightgreen", padding:3}}>
+                    {y}
+                  </th>
+
+                  {tabLibMonth.map((m, j) => {
+                    const month = String(j + 1).padStart(2,'0');
+                    const key = `${y}-${month}`;
+                    const value = getAvgMttrMonth(key);
+
+                    if (value !== null) {
+                      mttrYear += value;
+                      countMonth++;
+                    }
+
+                    // 🎯 STYLE DYNAMIQUE
+                    let bgColor = "white";
+                    let textColor = "black";
+                    let fontWeight = "normal";
+
+                    if (value !== null) {
+                      if (value >= 8) {
+                        bgColor = "red";
+                        textColor = "white";
+                        fontWeight = "bold";
+                      } else if (value >= 6) {
+                        bgColor = "orange";
+                        fontWeight = "bold";
+                      } else if (value >= 3) {
+                        bgColor = "yellow";
+                      }
+                    }
+
+                    return (
+                      <td
+                        key={j}
+                        style={{
+                          textAlign:"center",
+                          border:"1px solid black",
+                          padding:"3px",
+                          background: bgColor,
+                          color: textColor,
+                          fontWeight: fontWeight
+                        }}
+                      >
+                        {value !== null ? value.toFixed(2) : ""}
+                      </td>
+                    );
+                  })}
+
+                  {/* ✅ COLONNE AVERAGE */}
+                  {(() => {
+                    const avg = countMonth > 0 ? (mttrYear / countMonth) : null;
+
+                    let bgColor = "lightgreen";
+                    let textColor = "black";
+                    let fontWeight = "bold";
+
+                    if (avg !== null) {
+                      if (avg >= 8) {
+                        bgColor = "red";
+                        textColor = "white";
+                      } else if (avg >= 6) {
+                        bgColor = "orange";
+                      } else if (avg >= 3) {
+                        bgColor = "yellow";
+                      }
+                    }
+
+                    return (
+                      <td style={{
+                        textAlign:"center",
+                        border:"1px solid black",
+                        backgroundColor: bgColor,
+                        color: textColor,
+                        fontWeight: fontWeight,
+                        padding:"3px"
+                      }}>
+                        {avg !== null ? avg.toFixed(2) : ""}
+                      </td>
+                    );
+                  })()}
+
+                </tr>
+              );
+            })}
+
+          </tbody>
+        </table>
+
       </div>
+
+
+      <div style={{ width: "600px" }}>
+        <Line data={mttrChartData} options={mttrChartOptions} />
+      </div>
+        </div>
     </div>
   );
 };

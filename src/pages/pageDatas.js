@@ -6,7 +6,7 @@ const API_URL = process.env.REACT_APP_BACKEND_URL;
 
 const DivPageDatas = () => {
 
-  const [excelData, setExcelData] = useState([]);
+  const [incidentsDatas, setincidentsDatas] = useState([]);
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedWeek, setSelectedWeek] = useState("");
@@ -44,10 +44,13 @@ const DivPageDatas = () => {
     return date.toLocaleDateString('fr-FR');
   };
 
-  const fetchPerformance1s = async () => {
+  const fetchIncidents = async () => {
     try {
       const response = await fetch(`${API_URL}/api/tracker`);
       const data = await response.json();
+
+        // 🔥 TRI décroissant sur "opened"
+      data.sort((a, b) => new Date(b.opened) - new Date(a.opened));
 
       const tableData = [
         ["Number","Service","Week","Opened","Resolved","Mttr8Days"],
@@ -63,18 +66,20 @@ const DivPageDatas = () => {
         })
       ];
 
-      setExcelData(tableData);
+      setincidentsDatas(tableData);
 
     } catch (error) {
-      console.error("Erreur fetch performance1s :", error);
-      setExcelData([["Number","Service","Week","Opened","Resolved","Mttr8Days"]]);
+      console.error("Erreur fetch IncidentsResolved :", error);
+      setincidentsDatas([["Number","Service","Week","Opened","Resolved","Mttr8Days"]]);
     }
   };
 
 
   useEffect(() => {
-    fetchPerformance1s();
+    fetchIncidents();
   }, [dateLastImport]);
+
+  //-----------------
 
   const handleSelectYearChange = (event) => setSelectedYear(event.target.value);
   const handleSelectMonthChange = (event) => setSelectedMonth(event.target.value);
@@ -94,7 +99,9 @@ const DivPageDatas = () => {
     setAppliedService2(selectedService2);
   };
 
-  const filteredData = excelData.map((row,index) => {
+  //----------------
+
+  const filteredData = incidentsDatas.map((row,index) => {
     if(index===0) return row;
 
     const [number, service, weekStr, openedStr, resolvedStr, mttr8days] = row;
@@ -110,25 +117,28 @@ const DivPageDatas = () => {
     return row;
   }).filter(Boolean);
 
+  //--------------------
 
-  const incidents = filteredData.slice(1); // sans le header
+  const IncidentsResolved = filteredData.slice(1); // sans le header
 
-  const totalIncidentsTable1 = incidents.length;
+  const totalIncidentsTable1 = IncidentsResolved.length;
 
   let totalMttrTable1 = 0;
 
-  incidents.forEach(row => {
+  IncidentsResolved.forEach(row => {
     const mttr = parseFloat(row[5]);
     if (!isNaN(mttr)) {
       totalMttrTable1 += mttr;
     }
   });
 
-const avgMttrTable1 = totalIncidentsTable1
-  ? (totalMttrTable1 / totalIncidentsTable1).toFixed(2)
-  : "";
+  const avgMttrTable1 = totalIncidentsTable1
+    ? (totalMttrTable1 / totalIncidentsTable1).toFixed(2)
+    : "";
 
-  const filteredData2 = excelData.map((row,index) => {
+   //--------------- 
+
+  const filteredData2 = incidentsDatas.map((row,index) => {
     if(index===0) return row;
 
     const [number, service, weekStr, openedStr, resolvedStr, mttr8days] = row;
@@ -142,6 +152,8 @@ const avgMttrTable1 = totalIncidentsTable1
 
     return row;
   }).filter(Boolean);
+
+  //----------
 
   const mttrByService = {};
 
@@ -163,6 +175,8 @@ const avgMttrTable1 = totalIncidentsTable1
       mttrByService[serviceKey].total += parseFloat(mttr8days);
     }
   });
+
+  //-------------------------
 
   const servicesToDisplay = appliedService2
     ? [appliedService2]
