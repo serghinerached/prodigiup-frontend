@@ -143,7 +143,9 @@ const DivPageGraphs = () => {
         data: tabLibMonth.map((m, j) => {
           const month = String(j + 1).padStart(2, '0');
           const key = `${year}-${month}`;
-          return incidentsByYearMonth[key] || 0;
+          //return incidentsByYearMonth[key] || 0;
+          const value = incidentsByYearMonth[key];
+          return value && value !== 0 ? value : null;
         }),
         borderColor: colors[index % colors.length], // ✅ ICI
         borderWidth: 2,
@@ -285,7 +287,7 @@ const DivPageGraphs = () => {
 
         {/* GRAPH */}
       
-        <div style={{ width: "600px" }}>
+        <div style={{ width: "600px", border: "1px solid black", padding: "10px" }}>
           <Line data={chartData} options={chartOptions} />
         </div>
 
@@ -295,9 +297,9 @@ const DivPageGraphs = () => {
 
 
      {/* TABLEAU 2 */}
-     <div style={{ display: "flex", flexDirection: "column", gap: "30px" }}>
+     <div style={{ display: "flex", gap: "40px", alignItems: "flex-start" }}>
 
-      <div>
+      <div style={{ padding: "10px",width:"fit-content" }}>
         <table style={{borderCollapse: "collapse"}}>
           <thead>
             <tr>  
@@ -417,7 +419,7 @@ const DivPageGraphs = () => {
       </div>
 
 
-      <div style={{ width: "600px" }}>
+      <div style={{ width: "600px", border: "1px solid black", padding: "10px" }}>
         <Line data={mttrChartData} options={mttrChartOptions} />
       </div>
         </div>
