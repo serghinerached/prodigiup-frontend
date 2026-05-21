@@ -60,9 +60,14 @@ const DivPageGraphs = () => {
       const response = await fetch(`${API_URL}/api/tracker`);
       const data = await response.json();
 
+      const dataIncidents = data.filter(item =>
+        item.number &&
+        item.number.toLowerCase().includes("inc")
+      );
+
       const tableData = [
         ["Number","Resolved","Service","Mttr8Days"],
-        ...data.map(inc => {
+        ...dataIncidents.map(inc => {
           const resolved = inc.resolved || "";
           const service = inc.service || "";
           const mttr8days = inc.mttr || "";
@@ -140,13 +145,47 @@ const DivPageGraphs = () => {
     datasets: tabYear.map((year, index) => {
       return {
         label: year,
-        data: tabLibMonth.map((m, j) => {
-          const month = String(j + 1).padStart(2, '0');
-          const key = `${year}-${month}`;
-          //return incidentsByYearMonth[key] || 0;
-          const value = incidentsByYearMonth[key];
-          return value && value !== 0 ? value : null;
-        }),
+        data: (() => {
+          const currentDate = new Date();
+          const currentYear = currentDate.getFullYear();
+          const currentMonth = currentDate.getMonth() + 1;
+
+          // tableau des valeurs mensuelles
+          const values = tabLibMonth.map((m, j) => {
+
+            const month = j + 1;
+            const monthStr = String(month).padStart(2, '0');
+            const key = `${year}-${monthStr}`;
+
+            return incidentsByYearMonth[key] ?? 0;
+          });
+
+          // premier mois contenant des incidents
+          const firstIndex = values.findIndex(v => v > 0);
+
+          return values.map((value, index) => {
+
+            const month = index + 1;
+            const yearNum = parseInt(year);
+
+            // 🚫 masquer les mois futurs
+            if (
+              yearNum > currentYear ||
+              (yearNum === currentYear && month > currentMonth)
+            ) {
+              return null;
+            }
+
+            // 🚫 masquer avant premier incident
+            if (firstIndex !== -1 && index < firstIndex) {
+              return null;
+            }
+
+            // ✅ afficher les vrais zéros
+            return value;
+          });
+
+        })(),
         borderColor: colors[index % colors.length], // ✅ ICI
         borderWidth: 2,
         fill: false
@@ -175,12 +214,51 @@ const DivPageGraphs = () => {
     datasets: tabYear.map((year, index) => {
       return {
         label: year,
-        data: tabLibMonth.map((m, j) => {
-          const month = String(j + 1).padStart(2, '0');
-          const key = `${year}-${month}`;
-          const value = getAvgMttrMonth(key);
-          return value !== null ? Number(value.toFixed(2)) : null;
-        }),
+        data: (() => {
+          const currentDate = new Date();
+          const currentYear = currentDate.getFullYear();
+          const currentMonth = currentDate.getMonth() + 1;
+
+          // valeurs mensuelles
+          const values = tabLibMonth.map((m, j) => {
+
+            const month = j + 1;
+            const monthStr = String(month).padStart(2, '0');
+            const key = `${year}-${monthStr}`;
+
+            const value = getAvgMttrMonth(key);
+
+            return value !== null
+              ? Number(value.toFixed(2))
+              : 0;
+          });
+
+          // premier mois avec vraie donnée
+          const firstIndex = values.findIndex(v => v > 0);
+
+          return values.map((value, index) => {
+
+            const month = index + 1;
+            const yearNum = parseInt(year);
+
+            // 🚫 mois futurs
+            if (
+              yearNum > currentYear ||
+              (yearNum === currentYear && month > currentMonth)
+            ) {
+              return null;
+            }
+
+            // 🚫 avant première donnée
+            if (firstIndex !== -1 && index < firstIndex) {
+              return null;
+            }
+
+            // ✅ garder les zéros
+            return value;
+          });
+
+        })(),
         borderColor: colors[index % colors.length],
         borderWidth: 2,
         fill: false,

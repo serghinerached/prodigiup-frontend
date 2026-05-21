@@ -105,7 +105,7 @@ export const styles = {
 
    tableStyle :{
       marginLeft: "230px",
-      width: "80%",
+      width: "89%",
       borderCollapse: "collapse",
       tableLayout: "auto"
     },

@@ -31,7 +31,7 @@ const DivPageTracker = () => {
   };
 
   // FETCH DATA
-  const fetchIncidents = async () => {
+  const fetchTracker = async () => {
     try {
       const response = await fetch(`${API_URL}/api/tracker`);
       const data = await response.json();
@@ -67,7 +67,7 @@ const DivPageTracker = () => {
   };
 
   useEffect(() => {
-    fetchIncidents();
+    fetchTracker();
   }, [dateLastImport]);
 
   // Handlers sélection
@@ -81,16 +81,34 @@ const DivPageTracker = () => {
 
   const handleChange = async (event) => {
     const file = event.target.files[0];
-    if (!file) return;
+    alert(file.name);
 
+    if (!file) return;
+    
     const formData = new FormData();
     formData.append("file", file);
 
     try {
-      const response = await fetch(`${API_URL}/api/tracker/import-excel`, {
+      var response;
+      if (file.name.toLowerCase().includes("incident")) {
+      response = await fetch(`${API_URL}/api/tracker/import-excel-incidents`, {
         method: "POST",
         body: formData,
       });
+    } else if (file.name.toLowerCase().includes("task")) {
+      response = await fetch(`${API_URL}/api/tracker/import-excel-sctasks`, {
+        method: "POST",
+        body: formData,
+      });
+    } else if (file.name.toLowerCase().includes("knowledge")) {
+      response = await fetch(`${API_URL}/api/tracker/import-excel-kbs`, {
+        method: "POST",
+        body: formData,
+      });
+    } else {
+      alert("Nom de fichier non reconnu !");
+      return;
+    }
 
       const result = await response.text();
 
@@ -201,16 +219,17 @@ const DivPageTracker = () => {
                       border: "1px solid black",
                       padding: "5px",
                       whiteSpace: "nowrap",
+                      fontSize: "15px",
                       textAlign:
-                        cellIndex === 3 || cellIndex === 7 || cellIndex === 10
+                        cellIndex === 4 || cellIndex === 6 || cellIndex === 7 || cellIndex === 10
                           ? "left"
                           : "center",
                       maxWidth:
-                        cellIndex === 7 || cellIndex === 10 ? "150px" : "none",
-                      overflow:
-                        cellIndex === 7 || cellIndex === 10 ? "hidden" : "visible",
-                      textOverflow:
-                        cellIndex === 7 || cellIndex === 10 ? "ellipsis" : "clip"
+                        cellIndex === 6  ? "295px" : 
+                        cellIndex === 7 ? "235px" : 
+                        cellIndex === 10 ? "225px" : "none",
+                       
+                     
                     }}
                   >
                     {(cellIndex === 1 || cellIndex === 8 || cellIndex === 9) && cell

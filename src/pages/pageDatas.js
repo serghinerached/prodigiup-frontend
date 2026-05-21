@@ -49,12 +49,17 @@ const DivPageDatas = () => {
       const response = await fetch(`${API_URL}/api/tracker`);
       const data = await response.json();
 
+      const dataIncidents = data.filter(item =>
+        item.number &&
+        item.number.toLowerCase().includes("inc")
+      );
+
         // 🔥 TRI décroissant sur "opened"
-      data.sort((a, b) => new Date(b.opened) - new Date(a.opened));
+        dataIncidents.sort((a, b) => new Date(b.opened) - new Date(a.opened));
 
       const tableData = [
         ["Number","Service","Week","Opened","Resolved","Mttr8Days"],
-        ...data.map(inc => {
+        ...dataIncidents.map(inc => {
           return [
             inc.number || "",
             inc.service || "",

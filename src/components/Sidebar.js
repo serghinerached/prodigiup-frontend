@@ -71,7 +71,7 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
 
             <li style={{ marginBottom: 5 }}>
               <NavLink
-                to="/tracker"
+                to="/tracker/tracker"
                 style={({ isActive }) => ({
                   color: isActive ? "cyan" : "white",
                   textDecoration: "none",
@@ -84,7 +84,7 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
 
             <li>
               <NavLink
-                to="/tracker"
+                to="/tracker/reporting"
                 style={({ isActive }) => ({
                   color: isActive ? "cyan" : "white",
                   textDecoration: "none",

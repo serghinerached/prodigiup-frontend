@@ -7,6 +7,7 @@ import logoProdigiup from './assets/images/logoProdigiup.png';
 import TrackerComponent from "./components/TrackerComponent";
 import DatasComponent from "./components/DatasComponent";
 import GraphsComponent from "./components/GraphsComponent";
+import ReportingComponent from "./components/ReportingComponent";
 import Sidebar from './components/Sidebar';
 import Navbar from "./components/Navbar";
 /*
@@ -68,9 +69,11 @@ function App() {
           <Routes>
 
             <Route path="/" element={<><h2 style={{ color: '#007bff' }}>{message}</h2></>} />
-            <Route path="/tracker" element={<TrackerComponent />} />
+            <Route path="/tracker/tracker" element={<TrackerComponent />} />
             <Route path="/performance/datas" element={<DatasComponent />} />
             <Route path="/performance/graphs" element={<GraphsComponent />} />
+            <Route path="/tracker/reporting" element={<ReportingComponent />} />
+
 
             {/* 
             <Route path="/Guides/AccessRequests" element={<GuideRequestsComponent />} />
