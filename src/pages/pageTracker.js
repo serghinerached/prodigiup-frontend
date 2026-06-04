@@ -21,7 +21,7 @@ const DivPageTracker = () => {
   const tabLibMonth = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   const tabNumWeek = Array.from({ length: 52 }, (_, i) => i + 1);
-  const tabType = ["Incident", "Request"];
+  const tabType = ["Incident", "Request",'KB', "Package"];
 
   // Formatter date
   const formatDateFR = (dateStr) => {
@@ -153,6 +153,9 @@ const DivPageTracker = () => {
 
     return row;
   }).filter(Boolean);
+
+
+  //************************************************************************** */
 
   return (
     <div style={styles.divImport}>

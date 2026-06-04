@@ -34,8 +34,6 @@ const DivPageDatas = () => {
     "July", "August", "September", "October", "November", "December"];
   const tabnumMonth = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')).sort((a,b) => b.localeCompare(a));
   const tabNumWeek = Array.from({ length: 52 }, (_, i) => i + 1);
-  const tabService = ["DYMOLA ::C2A","Eclipse ::C2A","FLOWMASTER ::C2A","Hyperworks_Suite_AH","SaberRD ::C2A","Scade ::C2A",
-    "TeXstudio ::C2A","Visual Studio ::C2A"];
 
   
   const formatDateFR = (dateStr) => {

@@ -30,14 +30,14 @@ const DivPageReporting = () => {
 
   const [incidentsDatas, setIncidentsDatas] = useState([]);
   const [sctasksDatas, setSctasksDatas] = useState([]);
+  const [kbsDatas, setKbsDatas] = useState([]);
+  const [packagesDatas, setPackagesDatas] = useState([]);
   const [dateLastImport, setDateLastImport] = useState("");
   const hiddenFileInput = useRef(null);
   const tabYear = ["2022", "2023", "2024", "2025","2026"];
   const tabLibMonth = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   const tabnumMonth = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')).sort((a,b) => b.localeCompare(a));
-  const tabService = ["DYMOLA ::C2A","Eclipse ::C2A","FLOWMASTER ::C2A","Hyperworks_Suite_AH","SaberRD ::C2A","Scade ::C2A",
-    "TeXstudio ::C2A","Visual Studio ::C2A"];
 
   const tabItem =["Sctasks","Incidents","Packages","KBs"];
   const tabQ = ["Q1","Q2","Q3","Q4"];
@@ -101,7 +101,7 @@ const DivPageReporting = () => {
        // 🔥 TRI décroissant sur "opened" = FALCUTATIF
       //data.sort((a, b) => new Date(b.opened) - new Date(a.opened));
 
-      // incidents
+      // incidents--------------------------------------------
       const dataIncidents = data.filter(inc =>
         inc.number &&
         inc.number.toLowerCase().includes("inc") &&
@@ -119,10 +119,9 @@ const DivPageReporting = () => {
           ];
         })
       ];
-
       setIncidentsDatas(tableQY_Incidents);
 
-      // sctasks
+      // sctasks-----------------------------------------------------
       const dataSctasks = data.filter(sctask =>
         sctask.number &&
         sctask.number.toLowerCase().includes("sctask") &&
@@ -140,9 +139,49 @@ const DivPageReporting = () => {
           ];
         })
       ];
-
       setSctasksDatas(tableQY_Sctasks);
 
+      // kbs-----------------------------------------------------
+      const dataKbs = data.filter(kb =>
+        kb.number &&
+        kb.number.toLowerCase().includes("kb") &&
+        kb.resolved && kb.resolved !== ""
+      );
+
+      const tableQY_Kbs = [
+        ["Number","Year","Quarter","Week"],
+        ...dataKbs.map(kb => {
+          return [
+            kb.number || "",
+            findYear(kb.resolved) ,
+            "Q" + findQuarter(kb.resolved),
+            "W" + findWeek(kb.resolved)
+          ];
+        })
+      ];
+      setKbsDatas(tableQY_Kbs);
+
+      /*
+       // Packagings-----------------------------------------------------
+      const dataPackages = data.filter(package =>
+        package.number &&
+        package.number.toLowerCase().includes("sctask") &&
+        package.resolved && package.resolved !== ""
+      );
+
+      const tableQY_Packages = [
+        ["Number","Year","Quarter","Week"],
+        ...dataPackages.map(package => {
+          return [
+            package.number || "",
+            findYear(package.resolved) ,
+            "Q" + findQuarter(package.resolved),
+            "W" + findWeek(package.resolved)
+          ];
+        })
+      ];
+      setPackagesDatas(tableQY_Packages);
+  */
     } catch (error) {
       console.error("Erreur fetch performance1s :", error);
       setIncidentsDatas([["Number","Resolved"]]);
@@ -153,7 +192,7 @@ const DivPageReporting = () => {
     fetchDatas1();
   }, [dateLastImport]);
 
-
+  
   //-----graphiques -----
 
   const quarterLabels = tabYear.flatMap(year =>
@@ -183,6 +222,16 @@ const DivPageReporting = () => {
           )
         ),
         backgroundColor: "#36A2EB"
+      },
+
+      {
+        label: "Kbs",
+        data: tabYear.flatMap(year =>
+          tabQ.map(q =>
+            countIncidents(kbsDatas, year, q)
+          )
+        ),
+        backgroundColor: "lightgreen"
       }
 
     ]
@@ -334,7 +383,9 @@ const DivPageReporting = () => {
                           }}
                         >
                          {item === "Incidents" ? countIncidents(incidentsDatas, year, quarter)
-                          : item === "Sctasks" ? countIncidents(sctasksDatas, year, quarter) 
+                          : item === "Sctasks" ? countIncidents(sctasksDatas, year, quarter)
+                          : item === "KBs" ? countIncidents(kbsDatas, year, quarter)
+                      //    : item === "Packages" ? countIncidents(packagesDatas, year, quarter)
                           : ""}
                         </td>,
                       ]),
