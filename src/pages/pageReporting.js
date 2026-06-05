@@ -161,27 +161,27 @@ const DivPageReporting = () => {
       ];
       setKbsDatas(tableQY_Kbs);
 
-      /*
+      
        // Packagings-----------------------------------------------------
-      const dataPackages = data.filter(package =>
-        package.number &&
-        package.number.toLowerCase().includes("sctask") &&
-        package.resolved && package.resolved !== ""
+      const dataPackages = data.filter(pack =>
+        pack.number &&
+        pack.number.toLowerCase().includes("ritm") &&
+        pack.resolved && pack.resolved !== ""
       );
 
       const tableQY_Packages = [
         ["Number","Year","Quarter","Week"],
-        ...dataPackages.map(package => {
+        ...dataPackages.map(pack => {
           return [
-            package.number || "",
-            findYear(package.resolved) ,
-            "Q" + findQuarter(package.resolved),
-            "W" + findWeek(package.resolved)
+            pack.number || "",
+            findYear(pack.resolved) ,
+            "Q" + findQuarter(pack.resolved),
+            "W" + findWeek(pack.resolved)
           ];
         })
       ];
       setPackagesDatas(tableQY_Packages);
-  */
+  
     } catch (error) {
       console.error("Erreur fetch performance1s :", error);
       setIncidentsDatas([["Number","Resolved"]]);
@@ -232,6 +232,15 @@ const DivPageReporting = () => {
           )
         ),
         backgroundColor: "lightgreen"
+      },
+      {
+        label: "Packages",
+        data: tabYear.flatMap(year =>
+          tabQ.map(q =>
+            countIncidents(packagesDatas, year, q)
+          )
+        ),
+        backgroundColor: "grey"
       }
 
     ]
@@ -258,7 +267,7 @@ const DivPageReporting = () => {
       }
 
     }
-  };
+  };  
 
  
   //*********************** */
@@ -272,7 +281,7 @@ const DivPageReporting = () => {
 
       
       {/* Reporting 1 */}
-      <div style={{ display: "flex", gap: "40px", alignItems: "flex-start" }}>
+      <div style={{ display: "flex", gap: "30px", alignItems: "flex-start" }}>
 
         {/* tableau 1 */}
         <div >
@@ -280,7 +289,8 @@ const DivPageReporting = () => {
           <table style={{borderCollapse: "collapse"}}>
             <thead>
               <tr>  
-                <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"#B3CEFB",fontWeight:"bold",padding:"3px"}} colSpan={25}>QUARTERS</th>
+                <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"#B3CEFB",fontWeight:"bold",padding:"3px"}} colSpan={27}>QUARTERS</th>
+                
               </tr>
 
               <tr>
@@ -314,6 +324,9 @@ const DivPageReporting = () => {
                 />
 
               ]))}
+               <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"#00B0F0",fontWeight:"bold",
+                  padding:"3px"}} >TOTAL
+              </th>
             </tr>
 
             <tr>
@@ -352,6 +365,14 @@ const DivPageReporting = () => {
                 />
 
               ]))}
+             <th
+                style={{
+                  textAlign: "center",
+                  border: "1px solid black",
+                  backgroundColor:"#002060",color:"white",fontWeight:"bold",
+                  padding: "3px"
+                }}
+              ></th>,
             </tr>
 
             </thead>
@@ -359,8 +380,27 @@ const DivPageReporting = () => {
             <tbody>
 
               {tabItem.map((item, i) => {
-
-                let totalYear = 0;
+                const totalYear = tabYear.reduce((sum, year) => {
+                    return (
+                      sum +
+                      tabQ.reduce((qSum, quarter) => {
+                        return (
+                          qSum +
+                          (
+                            item === "Incidents"
+                              ? countIncidents(incidentsDatas, year, quarter)
+                              : item === "Sctasks"
+                              ? countIncidents(sctasksDatas, year, quarter)
+                              : item === "KBs"
+                              ? countIncidents(kbsDatas, year, quarter)
+                              : item === "Packages"
+                              ? countIncidents(packagesDatas, year, quarter)
+                              : 0
+                          )
+                        );
+                      }, 0)
+                    );
+                  }, 0);
 
                 return (
                   <tr key={i}>
@@ -385,7 +425,7 @@ const DivPageReporting = () => {
                          {item === "Incidents" ? countIncidents(incidentsDatas, year, quarter)
                           : item === "Sctasks" ? countIncidents(sctasksDatas, year, quarter)
                           : item === "KBs" ? countIncidents(kbsDatas, year, quarter)
-                      //    : item === "Packages" ? countIncidents(packagesDatas, year, quarter)
+                          : item === "Packages" ? countIncidents(packagesDatas, year, quarter)
                           : ""}
                         </td>,
                       ]),
@@ -401,6 +441,11 @@ const DivPageReporting = () => {
                       />
 
                     ]))} 
+                    <td style={{
+                        textAlign: "center",
+                        border: "1px solid black",
+                        padding: "3px"
+                    }}>  {totalYear} </td>
 
                   </tr>
                 );
