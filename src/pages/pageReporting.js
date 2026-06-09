@@ -41,8 +41,7 @@ const DivPageReporting = () => {
 
   const tabItem =["Sctasks","Incidents","Packages","KBs"];
   const tabQ = ["Q1","Q2","Q3","Q4"];
-  const tabW10 = ["W10","W9","W8","W7","W6","W5","W4","W3","W2","W1"];
-
+  //const tabW10 = ["W10","W9","W8","W7","W6","W5","W4","W3","W2","W1"];
 
   //---- fonctions utiles ----
 
@@ -64,6 +63,8 @@ const DivPageReporting = () => {
     return quarter;
   };
 
+  //---------------
+
   const findWeek = (dateString) => {
     const date = new Date(dateString);
     // copie UTC
@@ -81,12 +82,43 @@ const DivPageReporting = () => {
     return weekNo;
   };
 
+  //---------------
+
+  const getLast10Weeks = () => {
+    const today = new Date();
+
+    // semaine ISO courante
+    const currentWeek = findWeek(today);
+
+    return Array.from({ length: 10 }, (_, i) => {
+      return currentWeek - 10 + i;
+    });
+  };
+
+  const tabW10 = getLast10Weeks();
+
+  //--------------
+
   const countIncidents = (tableInc,year, quarter) => {
     return tableInc
       .slice(1) // enlever header
       .filter(row =>
         row[1].toString() === year.toString() &&
         row[2] === quarter
+      )
+      .length;
+  };
+
+  //--------------------
+
+  const currentYear = new Date().getFullYear();
+
+  const countByWeek = (tableData, year, week) => {
+    return tableData
+      .slice(1)
+      .filter(row =>
+        Number(row[1]) === Number(year) &&
+        row[3] === `W${week}`
       )
       .length;
   };
@@ -192,6 +224,46 @@ const DivPageReporting = () => {
     fetchDatas1();
   }, [dateLastImport]);
 
+  //---------------------
+
+  const graph2Data = {
+    labels: tabW10.map(w => `W${w}`),
+
+    datasets: [
+      {
+        label: "Incidents",
+        data: tabW10.map(w =>
+          countByWeek(incidentsDatas, currentYear, w)
+        ),
+        backgroundColor: "#FF6384"
+      },
+
+      {
+        label: "Sctasks",
+        data: tabW10.map(w =>
+          countByWeek(sctasksDatas, currentYear, w)
+        ),
+        backgroundColor: "#36A2EB"
+      },
+
+      {
+        label: "KBs",
+        data: tabW10.map(w =>
+          countByWeek(kbsDatas, currentYear, w)
+        ),
+        backgroundColor: "lightgreen"
+      },
+
+      {
+        label: "Packages",
+        data: tabW10.map(w =>
+          countByWeek(packagesDatas, currentYear, w)
+        ),
+        backgroundColor: "grey"
+      }
+    ]
+  };
+
   
   //-----graphiques -----
 
@@ -269,13 +341,34 @@ const DivPageReporting = () => {
     }
   };  
 
+
+  const graph2Options = {
+    responsive: true,
+
+    plugins: {
+      legend: {
+        position: "top"
+      }
+    },
+
+    scales: {
+      x: {
+        stacked: true
+      },
+
+      y: {
+        stacked: true,
+        beginAtZero: true
+      }
+    }
+  };
  
   //*********************** */
 
   return (
     <div style={{ marginLeft:'220px',marginBottom:'5px',textAlign:'left',}}>
 
-      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>REPORTING : 2026-05-19</h2>
+      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>REPORTING : 2026-06-08</h2>
 
       <br /> 
 
@@ -481,11 +574,21 @@ const DivPageReporting = () => {
               </tr>
               <tr>  
                 <th></th>
-                {tabW10.map((w,i)=>
-                  <th key={i} style={{textAlign:"center",border:"1px solid black",backgroundColor:"#002060",color:"white",fontWeight:"bold",padding:"3px"}}>
-                    {w}
-                  </th>
-                )}
+               {tabW10.map((week,i)=>
+                <th
+                  key={i}
+                  style={{
+                    textAlign:"center",
+                    border:"1px solid black",
+                    backgroundColor:"#002060",
+                    color:"white",
+                    fontWeight:"bold",
+                    padding:"3px"
+                  }}
+                >
+                  W{week}
+                </th>
+              )}
               </tr>
 
             </thead>
@@ -494,30 +597,34 @@ const DivPageReporting = () => {
 
               {tabItem.map((item, i) => {
 
-                let mttrYear = 0;
-                let countMonth = 0;
-
                 return (
                   <tr key={i}>
                     <th style={{ textAlign:"center", border:"1px solid black", backgroundColor:"#B3CEFB",fontWeight:"bold", padding:3}}>
                       {item}
                     </th>
 
-                    {tabW10.map((w, j) => {
-
-                      return (
-                        <td
-                          key={j}
-                          style={{
-                            textAlign:"center",
-                            border:"1px solid black",
-                            padding:"3px",
-                          }}
-                        >
-                          {w}
-                        </td>
-                      );
-                    })}                
+                    {tabW10.map((week, j) => (
+                      <td
+                        key={j}
+                        style={{
+                          textAlign:"center",
+                          border:"1px solid black",
+                          padding:"3px",
+                        }}
+                      >
+                        {
+                          item === "Incidents"
+                            ? countByWeek(incidentsDatas, currentYear, week)
+                            : item === "Sctasks"
+                            ? countByWeek(sctasksDatas, currentYear, week)
+                            : item === "KBs"
+                            ? countByWeek(kbsDatas, currentYear, week)
+                            : item === "Packages"
+                            ? countByWeek(packagesDatas, currentYear,  week)
+                            : ""
+                        }
+                      </td>
+                    ))}      
 
                   </tr>
                 );
@@ -529,9 +636,64 @@ const DivPageReporting = () => {
         </div>
 
         {/* GRAPHIQUE 2 */}
-        <div style={{ width: "600px", border: "1px solid black", padding: "10px",marginTop:"10px" }}>
-              Graphique 2
+        <div style={{ width: "600px", border: "1px solid black", padding: "10px", marginTop:"10px" }}>
+          <Bar
+            data={graph2Data}
+            options={graph2Options}
+          />
         </div>
+
+        <div>
+        
+         <table style={{borderCollapse: "collapse"}}>
+            <thead>
+              <tr>  
+                <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"yellow",padding:"3px"}} colSpan={2}>Incidents - June 2026</th>
+              </tr>
+            </thead>
+            
+            <tbody>
+              <tr>
+                <td style={{ textAlign:"left", border:"1px solid black", padding:3}}>
+                  Resolved
+                </td>
+                <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
+                  xxx
+                </td>
+              </tr>
+
+               <tr>
+                <td style={{ textAlign:"left", border:"1px solid black", padding:3}}>
+                  Main Time To Resolve
+                </td>
+                <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
+                  x / 8
+                </td>
+              </tr>
+
+               <tr>
+                <td style={{ textAlign:"left", border:"1px solid black", padding:3}}>
+                  Time breached
+                </td>
+                <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
+                  xxx
+                </td>
+              </tr>
+
+               <tr>
+                <td style={{ textAlign:"left", border:"1px solid black", padding:3}}>
+                  Reopen
+                </td>
+                <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
+                  xxx
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+
+        
+        </div>      
 
       </div>
 
