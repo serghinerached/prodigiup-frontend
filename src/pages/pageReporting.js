@@ -41,7 +41,7 @@ const DivPageReporting = () => {
 
   const tabItem =["Sctasks","Incidents","Packages","KBs"];
   const tabQ = ["Q1","Q2","Q3","Q4"];
-  //const tabW10 = ["W10","W9","W8","W7","W6","W5","W4","W3","W2","W1"];
+  const [dataIncidentsResolved, setDataIncidentsResolved] = useState([]);
 
   //---- fonctions utiles ----
 
@@ -123,6 +123,39 @@ const DivPageReporting = () => {
       .length;
   };
 
+  //-----------------
+
+  const countResolvedCurrentMonth = () => {
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    return dataIncidentsResolved.filter(inc => {
+      const d = new Date(inc.resolved);
+
+      return (
+        d.getFullYear() === currentYear &&
+        d.getMonth() === currentMonth
+      );
+    }).length;
+  };
+
+  //-----------------
+
+  const countReopenCurrentMonth = () => {
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+
+    return dataIncidentsResolved.filter(inc => {
+      const d = new Date(inc.resolved);
+
+      return (
+        d.getFullYear() === currentYear &&
+        d.getMonth() === currentMonth &&
+        Number(inc.reopenCount || 0) > 0
+      );
+    }).length;
+  };
+
   //-------------------
 
   const fetchDatas1 = async () => {
@@ -139,6 +172,7 @@ const DivPageReporting = () => {
         inc.number.toLowerCase().includes("inc") &&
         inc.resolved && inc.resolved !== ""
       );
+      setDataIncidentsResolved(dataIncidents);
 
       const tableQY_Incidents = [
         ["Number","Year","Quarter","Week"],
@@ -263,6 +297,16 @@ const DivPageReporting = () => {
       }
     ]
   };
+
+  //--------
+
+  // for tableau 3
+  const currentMonth = new Date().getMonth() + 1;
+  const libCurrentMonth = tabLibMonth[currentMonth - 1];
+  const currentMonthPrev = new Date().getMonth();
+  const libCurrentMonthPrev = tabLibMonth[currentMonthPrev - 1];
+  const currentYearPrev = currentYear - 1;
+  
 
   
   //-----graphiques -----
@@ -549,7 +593,7 @@ const DivPageReporting = () => {
         </div>
 
         {/* GRAPHIQUE 1 */}
-        <div style={{ width: "600px", border: "1px solid black", padding: "10px" }}>
+        <div style={{ width: "450px", border: "1px solid black", padding: "10px" }}>
           <Bar
             data={graph1Data}
             options={graph1Options}
@@ -636,7 +680,7 @@ const DivPageReporting = () => {
         </div>
 
         {/* GRAPHIQUE 2 */}
-        <div style={{ width: "600px", border: "1px solid black", padding: "10px", marginTop:"10px" }}>
+        <div style={{ width: "400px", border: "1px solid black", padding: "10px", marginTop:"10px" }}>
           <Bar
             data={graph2Data}
             options={graph2Options}
@@ -645,10 +689,11 @@ const DivPageReporting = () => {
 
         <div>
         
-         <table style={{borderCollapse: "collapse"}}>
+        {/* tableau 3 */}
+          <table style={{borderCollapse: "collapse"}}>
             <thead>
               <tr>  
-                <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"yellow",padding:"3px"}} colSpan={2}>Incidents - June 2026</th>
+                <th style={{textAlign:"center",border:"1px solid black",backgroundColor:"yellow",padding:"3px"}} colSpan={2}>Incidents - {libCurrentMonth} {currentYear}</th>
               </tr>
             </thead>
             
@@ -658,7 +703,7 @@ const DivPageReporting = () => {
                   Resolved
                 </td>
                 <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
-                  xxx
+                  {countResolvedCurrentMonth()}
                 </td>
               </tr>
 
@@ -682,10 +727,10 @@ const DivPageReporting = () => {
 
                <tr>
                 <td style={{ textAlign:"left", border:"1px solid black", padding:3}}>
-                  Reopen
+                  Reopen  
                 </td>
                 <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
-                  xxx
+                  {countReopenCurrentMonth()}
                 </td>
               </tr>
               
