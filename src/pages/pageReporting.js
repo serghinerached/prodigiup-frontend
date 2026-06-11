@@ -705,6 +705,9 @@ const DivPageReporting = () => {
                 <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
                   {countResolvedCurrentMonth()}
                 </td>
+                <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
+                icone 1
+                </td>
               </tr>
 
                <tr>
@@ -714,14 +717,20 @@ const DivPageReporting = () => {
                 <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
                   x / 8
                 </td>
+ <              td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
+                icone 2
+                </td>
               </tr>
 
                <tr>
                 <td style={{ textAlign:"left", border:"1px solid black", padding:3}}>
-                  Time breached
+                  SLA Time breached
                 </td>
                 <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
                   xxx
+                </td>
+                <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
+                icone 3
                 </td>
               </tr>
 
@@ -732,6 +741,10 @@ const DivPageReporting = () => {
                 <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
                   {countReopenCurrentMonth()}
                 </td>
+                <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
+                icone 4
+                </td>
+
               </tr>
               
             </tbody>
