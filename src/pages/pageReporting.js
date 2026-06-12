@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { styles } from '../components/ComponentCss';
 import listCots from "./listCots";
+import { FaSmile, FaMeh, FaFrown, FaAngry } from "react-icons/fa";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -156,7 +158,7 @@ const DivPageReporting = () => {
     }).length;
   };
 
-  //-------------------
+  //-----------------
 
   const fetchDatas1 = async () => {
     try {
@@ -170,7 +172,7 @@ const DivPageReporting = () => {
       const dataIncidents = data.filter(inc =>
         inc.number &&
         inc.number.toLowerCase().includes("inc") &&
-        inc.resolved && inc.resolved !== ""
+        inc.resolved && inc.resolved !== "" 
       );
       setDataIncidentsResolved(dataIncidents);
 
@@ -260,6 +262,51 @@ const DivPageReporting = () => {
 
   //---------------------
 
+  const getMttrMonthYear = (month, year) => {
+
+    const incidentsMonth = dataIncidentsResolved.filter(inc => {
+      const d = new Date(inc.resolved);
+
+      return (
+        d.getFullYear() === Number(year) &&
+        d.getMonth() + 1 === Number(month) &&
+        inc.service &&
+        inc.mttr !== null &&
+        inc.mttr !== undefined &&
+        inc.mttr !== ""
+      );
+    });
+
+    if (incidentsMonth.length === 0) return "N/A";
+
+    // regroupement par service
+    const services = {};
+
+    incidentsMonth.forEach(inc => {
+      const service = inc.service;
+
+      if (!services[service]) {
+        services[service] = [];
+      }
+
+      services[service].push(Number(inc.mttr));
+    });
+
+    // moyenne par service
+    const avgByService = Object.values(services).map(mttrs => {
+      return mttrs.reduce((sum, v) => sum + v, 0) / mttrs.length;
+    });
+
+    // moyenne des moyennes
+    const mttrMonthYear =
+      avgByService.reduce((sum, avg) => sum + avg, 0) /
+      avgByService.length;
+
+    return mttrMonthYear.toFixed(2);
+  };
+
+  //-------------------
+
   const graph2Data = {
     labels: tabW10.map(w => `W${w}`),
 
@@ -306,9 +353,38 @@ const DivPageReporting = () => {
   const currentMonthPrev = new Date().getMonth();
   const libCurrentMonthPrev = tabLibMonth[currentMonthPrev - 1];
   const currentYearPrev = currentYear - 1;
+
+  //-----------
+
+  const getMttrIcon = (mttr) => {
+    if (mttr < 3) {
+      return <FaSmile color="green" size={20} />;
+    }
+
+    if (mttr < 6) {
+      return <FaMeh color="gold" size={20} />;
+    }
+
+    if (mttr <= 8) {
+      return <FaMeh color="orange" size={20} />;
+    }
+
+    return <FaAngry color="red" size={20} />;
+  };
+
+  const getSlaReopenIcon = (sr) => {
+    if (sr < 1) {
+      return <FaSmile color="green" size={20} />;
+    }
+
+    if (sr < 2) {
+      return <FaMeh color="orange" size={20} />;
+    }
+
+    return <FaAngry color="red" size={20} />;
+  };
   
 
-  
   //-----graphiques -----
 
   const quarterLabels = tabYear.flatMap(year =>
@@ -705,20 +781,21 @@ const DivPageReporting = () => {
                 <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
                   {countResolvedCurrentMonth()}
                 </td>
-                <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
-                icone 1
+                <td style={{ textAlign:"center", padding:3,fontSize:"20px"}}>
                 </td>
               </tr>
 
                <tr>
-                <td style={{ textAlign:"left", border:"1px solid black", padding:3}}>
-                  Main Time To Resolve
+                <td style={{ textAlign:"left", border:"1px solid black", padding:3 }}>
+                  Mean Time To Resolve
                 </td>
-                <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
-                  x / 8
+
+                <td style={{ textAlign:"center", border:"1px solid black", padding:3 }}>
+                  {getMttrMonthYear(currentMonth, currentYear)}
                 </td>
- <              td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
-                icone 2
+
+                <td style={{ textAlign:"center",  padding:3,verticalAlign:"middle"}}>
+                  {getMttrIcon(2)}
                 </td>
               </tr>
 
@@ -727,10 +804,10 @@ const DivPageReporting = () => {
                   SLA Time breached
                 </td>
                 <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
-                  xxx
+                  {0}
                 </td>
-                <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
-                icone 3
+                <td style={{ textAlign:"center",  padding:3}}>
+                  {getSlaReopenIcon(0)}
                 </td>
               </tr>
 
@@ -741,8 +818,8 @@ const DivPageReporting = () => {
                 <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
                   {countReopenCurrentMonth()}
                 </td>
-                <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
-                icone 4
+                <td style={{ textAlign:"center",  padding:3}}>
+                  {getSlaReopenIcon(countReopenCurrentMonth())}
                 </td>
 
               </tr>

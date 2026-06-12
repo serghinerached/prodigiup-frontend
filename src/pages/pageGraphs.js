@@ -138,7 +138,7 @@ const DivPageGraphs = () => {
 
   //-----graphiques inc-----
 
-  const colors = ["red", "blue", "green", "orange", "grey"];
+  const colors = ["grey", "blue", "green", "orange", "red"];
 
   const chartData = {
     labels: tabLibMonth,

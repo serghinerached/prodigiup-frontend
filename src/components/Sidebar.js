@@ -6,7 +6,8 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
 
   const [openTracker, setOpenTracker] = useState(false);
   const [openIncidents, setOpenIncidents] = useState(false);
-
+  const [openGuides, setOpenGuides] = useState(false);
+  const [openGuideRequests, setOpenGuideRequests] = useState(false);
 
   return (
 
@@ -155,18 +156,101 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
 
       </li>
 
+      
+      <li style={{ padding: '15px 0', borderBottom: '1px solid #444', fontSize: 25 }}>
 
-      <li style={{ padding: '15px 0', borderBottom: '1px solid #444',fontSize: 25 }}>
-        <NavLink
-          to="/Guides/AccessRequests"
-          style={({ isActive }) => ({
-            color: isActive ? "cyan" : "white",
-            textDecoration: "none"
-          })}
+        {/* Titre cliquable */}
+        <div
+          onClick={() => setOpenGuides(!openGuides)}
+          style={{
+            color: "white",
+            cursor: "pointer",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
         >
           Guides
-        </NavLink>
+          <span style={{ fontSize: 18 }}>
+            {openGuides ? "▼" : "▶"}
+          </span>
+        </div>
+
+        {/* Sous-menu */}
+        {openGuides && (
+          <ul style={{ listStyle: "none", paddingLeft: 15, marginTop: 10 }}>
+
+            <li style={{ marginBottom: 5 }}>
+
+              <div
+                onClick={() => setOpenGuideRequests(!openGuideRequests)}
+                style={{
+                  color: "white",
+                  cursor: "pointer",
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  fontSize: 20
+                }}
+              >
+                Requests
+                <span style={{ fontSize: 14 }}>
+                  {openGuideRequests ? "▼" : "▶"}
+                </span>
+              </div>
+
+              {openGuideRequests && (
+                <ul style={{ listStyle: "none", paddingLeft: 20, marginTop: 5 }}>
+
+                  <li style={{ marginBottom: 5 }}>
+                    <NavLink
+                      to="/Guides/AccessRequests"
+                      style={({ isActive }) => ({
+                        color: isActive ? "cyan" : "white",
+                        textDecoration: "none",
+                        fontSize: 18
+                      })}
+                    >
+                      Access
+                    </NavLink>
+                  </li>
+
+                  <li>
+                    <NavLink
+                      to="/Guides/VSLicenseKey"
+                      style={({ isActive }) => ({
+                        color: isActive ? "cyan" : "white",
+                        textDecoration: "none",
+                        fontSize: 18
+                      })}
+                    >
+                      VS License Key
+                    </NavLink>
+                  </li>
+
+                </ul>
+              )}
+
+            </li>
+
+            <li>
+              <NavLink
+                to="/Guides/Incidents"
+                style={({ isActive }) => ({
+                  color: isActive ? "cyan" : "white",
+                  textDecoration: "none",
+                  fontSize: 20
+                })}
+              >
+                Incidents
+              </NavLink>
+            </li>
+
+          </ul>
+        )}
+
       </li>
+     
 
       </ul>
 

@@ -66,7 +66,7 @@ export const styles = {
     display: 'inline-block',
   },
   divImport:{
-    //marginLeft:'230px',
+    marginLeft:'230px',
     marginBottom:'5px',
     textAlign:'center',
 
