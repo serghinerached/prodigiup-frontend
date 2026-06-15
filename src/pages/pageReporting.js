@@ -488,7 +488,7 @@ const DivPageReporting = () => {
   return (
     <div style={{ marginLeft:'220px',marginBottom:'5px',textAlign:'left',}}>
 
-      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>REPORTING : 2026-06-08</h2>
+      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>REPORTING : 2026-06-15</h2>
 
       <br /> 
 

@@ -66,10 +66,19 @@ export const styles = {
     display: 'inline-block',
   },
   divImport:{
+    //marginLeft:'230px',
+    marginBottom:'5px',
+    textAlign:'center',
+
+  },
+   divPageGuideRequests:{
     marginLeft:'230px',
     marginBottom:'5px',
     textAlign:'center',
 
+  },
+   tableRequestsMessages:{
+    borderCollapse : 'collapse'
   },
   title:{
     display: 'inline-block',
@@ -155,8 +164,13 @@ export const styles = {
   td2Messages: {
     border:"1px solid black",
     padding:"5px",
-    whiteSpace: "pre-line"
-  }
+    whiteSpace: "pre-line",
+    textAlign:"left"
+  },
+
+  tableRequests:{
+    borderCollapse : 'collapse'
+  },
   }
 
 

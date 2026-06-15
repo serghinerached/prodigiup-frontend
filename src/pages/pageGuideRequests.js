@@ -31,12 +31,12 @@ const DivPageGuideRequests = () => {
   //************************************************************************** */
 
   return (
-    <div style={styles.divImport}>
+    <div style={styles.divPageGuideRequests}>
 
       <h2 style={styles.title}>GUIDE: Access requests</h2>
       <br />
 
-       <table style={styles.tableIncidents}>
+       <table style={styles.tableRequests}>
           <tbody>
 
             {excelDataLoad.map((row, rowIndex) => {
