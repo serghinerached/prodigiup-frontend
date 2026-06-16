@@ -13,11 +13,10 @@ import Navbar from "./components/Navbar";
 import GuideRequestsComponent from "./components/GuideRequestsComponent";
 import GuideRequestsMessagesComponent from "./components/GuideRequestsMessagesComponent";
 import GuideRequestVsLicenseKeyComponent from "./components/GuideRequestsVsLicenseKeyComponent";
-/*
 import GuideIncidentsComponent from "./components/GuideIncidentsComponent";
 import GuideIncidentsMessageComponent from "./components/GuideIncidentsMessagesComponent";
-import GuideRequestVsLicenseKeyComponent from "./components/GuideRequestsVsLicenseKeyComponent";
-*/
+import GuideIncidentsHistoricalComponent from "./components/GuideIncidentsHistoricalComponent";
+
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
 function App() {
@@ -77,12 +76,10 @@ function App() {
             <Route path="/Guides/AccessRequests" element={<GuideRequestsComponent />} />
             <Route path="/Guides/requestsMessages/:id" element={<GuideRequestsMessagesComponent />} />
             <Route path="/Guides/VsLicenseKey" element={<GuideRequestVsLicenseKeyComponent />} />
-
-               {/* 
             <Route path="/Guides/Incidents" element={<GuideIncidentsComponent />} />
             <Route path="/Guides/incidentsMessages/:id" element={<GuideIncidentsMessageComponent />} />
-            */ }
-
+            <Route path="/Guides/AccessRequests" element={<GuideRequestsComponent />} />
+            <Route path="/Guides/IncidentsHistorical" element={<GuideIncidentsHistoricalComponent />} />
           </Routes>
 
         </main>

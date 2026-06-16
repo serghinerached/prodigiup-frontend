@@ -106,7 +106,12 @@ export const styles = {
     display: 'inline-block',
     fontweight:'bold'
   },
-  tdIncidents:{
+  tdTabHistorical:{
+    border:'1px solid black',
+    padding:5,
+    textAlign:"center",
+  },
+   tdIncidents:{
     border:'1px solid black',
     padding:5,
   },

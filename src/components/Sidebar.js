@@ -228,22 +228,63 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
                     </NavLink>
                   </li>
 
-                </ul>
+                </ul>                
               )}
 
             </li>
 
-            <li>
-              <NavLink
-                to="/Guides/Incidents"
-                style={({ isActive }) => ({
-                  color: isActive ? "cyan" : "white",
-                  textDecoration: "none",
-                  fontSize: 20
-                })}
-              >
-                Incidents
-              </NavLink>
+
+            <li style={{ marginBottom: 5 }}>
+
+            <div
+              onClick={() => setOpenGuideRequests(!openGuideRequests)}
+              style={{
+                color: "white",
+                cursor: "pointer",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                fontSize: 20
+              }}
+            >
+              Incidents
+              <span style={{ fontSize: 14 }}>
+                {openGuideRequests ? "▼" : "▶"}
+              </span>
+            </div>
+
+            {openGuideRequests && (
+              <ul style={{ listStyle: "none", paddingLeft: 20, marginTop: 5 }}>
+
+                <li style={{ marginBottom: 5 }}>
+                  <NavLink
+                    to="/Guides/Incidents"
+                    style={({ isActive }) => ({
+                      color: isActive ? "cyan" : "white",
+                      textDecoration: "none",
+                      fontSize: 18
+                    })}
+                  >
+                    Schema
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to="/Guides/IncidentsHistorical"
+                    style={({ isActive }) => ({
+                      color: isActive ? "cyan" : "white",
+                      textDecoration: "none",
+                      fontSize: 18
+                    })}
+                  >
+                    Historical
+                  </NavLink>
+                </li>
+
+                </ul>                
+              )}
+
             </li>
 
           </ul>
