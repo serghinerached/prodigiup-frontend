@@ -25,7 +25,7 @@ const DivPageGuideIncidentsHistorical = () => {
 
   // click icone msg
   const handleIconHistClick = (id) => {
-    navigate(`/Guides/requestsMessages/${id}`); // redirection vers /detail/id
+    navigate(`/Guides/HistoricalMessages/${id}`); // redirection vers /detail/id
   };
 
   //************************************************************************** */
@@ -55,7 +55,7 @@ const DivPageGuideIncidentsHistorical = () => {
                       <td style={styles.tdTabHistorical}>{row[0]}</td> 
                       <td style={styles.tdTabHistorical} >{row[1]}</td> 
                       <td style={styles.tdIncidentsCol4}>
-                        <FaEdit size={20} style={styles.colMessages} onClick={() => handleIconHistClick(row[2])}/>
+                        <FaEdit size={20} style={styles.colMessages} onClick={() => handleIconHistClick([row[0], row[2]])}/>
                       </td> 
                     </tr>
                   )

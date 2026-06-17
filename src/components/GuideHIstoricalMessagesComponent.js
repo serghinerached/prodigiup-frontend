@@ -7,7 +7,7 @@ class GuideHistoricalMessagesComponent extends React.Component {
     render () {
           return(
             <div style={styles.div2}>
-                <DivPageGuidedHistoricalMessages/>
+                <DivPageGuideHistoricalMessages/>
             </div>
         )
     }

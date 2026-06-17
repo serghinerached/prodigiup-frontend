@@ -96,6 +96,12 @@ export const styles = {
     display: 'inline-block',
     fontweight:'bold',
   },
+   title4:{
+    marginLeft:'100px',
+    marginTop:'10px',
+    display: 'inline-block',
+    fontweight:'bold',
+  },
   p1:{
     marginLeft:'7px',
     display: 'inline-block',
@@ -109,7 +115,7 @@ export const styles = {
   tdTabHistorical:{
     border:'1px solid black',
     padding:5,
-    textAlign:"center",
+    textAlign:"left",
   },
    tdIncidents:{
     border:'1px solid black',
@@ -165,6 +171,11 @@ export const styles = {
     fontWeight:"bold",
     backgroundColor:"lightgreen",
     padding:"5px",
+  },
+  tdHistMessages: {
+    border:"1px solid black",
+    padding:"5px",
+    textAlign:"left"
   },
   td2Messages: {
     border:"1px solid black",

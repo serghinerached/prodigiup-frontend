@@ -16,6 +16,7 @@ import GuideRequestVsLicenseKeyComponent from "./components/GuideRequestsVsLicen
 import GuideIncidentsComponent from "./components/GuideIncidentsComponent";
 import GuideIncidentsMessageComponent from "./components/GuideIncidentsMessagesComponent";
 import GuideIncidentsHistoricalComponent from "./components/GuideIncidentsHistoricalComponent";
+import GuideHistoricalMessagesComponent from "./components/GuideHistoricalMessagesComponent";
 
 const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -80,6 +81,7 @@ function App() {
             <Route path="/Guides/incidentsMessages/:id" element={<GuideIncidentsMessageComponent />} />
             <Route path="/Guides/AccessRequests" element={<GuideRequestsComponent />} />
             <Route path="/Guides/IncidentsHistorical" element={<GuideIncidentsHistoricalComponent />} />
+            <Route path="/Guides/HistoricalMessages/:id" element={<GuideHistoricalMessagesComponent />} />
           </Routes>
 
         </main>
