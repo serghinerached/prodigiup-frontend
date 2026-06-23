@@ -73,10 +73,9 @@ function DivPageGuideRequestVsLicenseKey() {
                     <line x1="455" y1="210" x2="187" y2="245" stroke="black" markerEnd="url(#arrow)" />
 
                     <line x1="563" y1="180" x2="563" y2="140" stroke="black" markerEnd="url(#arrow)" />
-                    <rect x="535" y="100" width="60" height="40" fill="cyan" stroke="black" />
+                    <rect x="535" y="100" width="60" height="40" fill="red"troke="black" />
                     <text x="565" y="125" textAnchor="middle" fill="black" style={{ cursor: "pointer" }} onClick={(e) => setForm((prev) => ({ ...prev, open:true,nameMessage: "Msg 2F" }))}>
                       Msg 2F</text>
-                    <line x1="535" y1="120" x2="160" y2="153" stroke="black" markerEnd="url(#arrow)" />
 
                     <line x1="153" y1="260" x2="153" y2="280" stroke="black"  markerEnd="url(#arrow)" />     
                     <polygon points="153,280 283,300 153,325 23,300" fill={"orange"} />
@@ -100,8 +99,8 @@ function DivPageGuideRequestVsLicenseKey() {
 
                     <line x1="389" y1="340" x2="389" y2="370" stroke="black" markerEnd="url(#arrow)" />
                     <rect x="350" y="373" width="77" height="40" fill="cyan" stroke="black" />
-                    <text x="390" y="399" textAnchor="middle" fill="black" style={{ cursor: "pointer"}} onClick={(e) => setForm((prev) => ({ ...prev, open:true,nameMessage: "Msg 6E" }))}>
-                      Msg 6E</text>
+                    <text x="390" y="390" textAnchor="middle" fill="black" style={{ cursor: "pointer"}} onClick={(e) => setForm((prev) => ({ ...prev, open:true,nameMessage: "Msg 6E" }))}>
+                      Msg 6E<tspan x="390" dy="1em">(Techbar)</tspan></text>
 
                     <line x1="389" y1="412" x2="389" y2="442" stroke="black" markerEnd="url(#arrow)" />
                     <rect x="350" y="444" width="77" height="40" fill="lightgreen" stroke="black" />
@@ -109,21 +108,17 @@ function DivPageGuideRequestVsLicenseKey() {
                       Msg 6G</text>
 
                     <line x1="467" y1="300" x2="467" y2="370" stroke="black" markerEnd="url(#arrow)" />
-                    <rect x="450" y="373" width="77" height="50" fill="cyan" stroke="black" />
+                    <rect x="450" y="373" width="77" height="50" fill="lightgreen" stroke="black" />
                     <text x="488" y="393" textAnchor="middle" fill="black" style={{ cursor: "pointer" }} onClick={(e) => setForm((prev) => ({ ...prev, open:true,nameMessage: "Msg 6F" }))}>
-                      Msg 6F<tspan x="488" dy="1em">(Remote)</tspan>
+                      Msg 6F<tspan x="488" dy="1em">(SCCM)</tspan>
                     </text>
 
-                    <line x1="474" y1="422" x2="474" y2="442" stroke="black" markerEnd="url(#arrow)" />
-                    <rect x="450" y="446" width="65" height="40" fill="lightgreen" stroke="black" />
-                    <text x="483" y="470" textAnchor="middle" fill="black" style={{ cursor: "pointer" }} onClick={(e) => setForm((prev) => ({ ...prev, open:true,nameMessage: "Msg 6H" }))}>
-                      Msg 6H
-                    </text>
+                    
 
                     <line x1="389" y1="485" x2="389" y2="570" stroke="black" markerEnd="url(#arrow)" />
-                    <line x1="474" y1="485" x2="474" y2="570" stroke="black" markerEnd="url(#arrow)" />
+                    <line x1="467" y1="422" x2="467" y2="570" stroke="black" markerEnd="url(#arrow)" />
 
-                    <line x1="474" y1="572" x2="153" y2="572" stroke="black"  />
+                    <line x1="470" y1="572" x2="153" y2="572" stroke="black"  />
                     <line x1="153" y1="572" x2="153" y2="538" stroke="black"  markerEnd="url(#arrow)" />
 
 
