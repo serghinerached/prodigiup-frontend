@@ -193,6 +193,7 @@ const DivPageReporting = () => {
       const dataSctasks = data.filter(sctask =>
         sctask.number &&
         sctask.number.toLowerCase().includes("sctask") &&
+        sctask.state === "Closed Complete" &&
         sctask.resolved && sctask.resolved !== ""
       );
 
