@@ -4,22 +4,26 @@ import { useParams } from 'react-router-dom';
 import { loadDataExcelCotsList } from '../components/ReadExcelFileData/ExcelLoaderCotsList';
 
 
-function DivPageGuideHistoricalMessages() {
+function DivPageGuideIncidentsExamplesMessages() {
   const {id} = useParams();
   const application = id.split(',')[0]; // Récupère le premier élément du tableau
-  const numHelp = id.split(',')[1]; // Récupère le deuxième élément du tableau
+  const issue = id.split(',')[1]; // Récupère le deuxième élément du tableau
+  const numHelp = id.split(',')[2]; // Récupère le troisième élément du tableau
 
    // DECLARATIONS
+  const [messageHelp, SetMessageHelp] = useState([]);  
   const [excelMessagesLoad, SetExcelMessagesLoad] = useState([]);  
   const [messageDescription, SetMessageDescription] = useState([]);  
-  const [messageHelp, SetMessageHelp] = useState([]);  
-  const [kb, setKb] = useState([]);
+  const [messageQuestions, setMessageQuestions] = useState([]);  
+  const [messageConditions, setMessageConditions] = useState([]);
+  const [messageResolution, setMessageResolution] = useState([]);  
+  const [messageKb, setMessageKb] = useState([]);
   
     
   // TRAITEMENT DEMARRAGE
   useEffect(() => {
     const fetchData = async () => {
-      var copyData = [...await loadDataExcelCotsList(4)];
+      var copyData = [...await loadDataExcelCotsList(6)];
       SetExcelMessagesLoad(copyData);
     }
       fetchData();
@@ -32,9 +36,11 @@ function DivPageGuideHistoricalMessages() {
     for (let i = 0; i < excelMessagesLoad.length; i++) {
 
       if (String(excelMessagesLoad[i][0]).trim() === String(numHelp).trim()) {
-        SetMessageDescription(excelMessagesLoad[i][1]);
-        SetMessageHelp(excelMessagesLoad[i][2]);
-        setKb(excelMessagesLoad[i][3]);
+        SetMessageDescription(issue);
+        setMessageQuestions(excelMessagesLoad[i][1]);
+        setMessageConditions(excelMessagesLoad[i][2]);
+        setMessageResolution(excelMessagesLoad[i][3]);
+        setMessageKb(excelMessagesLoad[i][4]);
         break;
       }
 
@@ -60,16 +66,25 @@ function DivPageGuideHistoricalMessages() {
                       <td style={{...styles.tdHistMessages,whiteSpace: "pre-line"}}>{messageDescription}</td>
                     </tr>
                     <tr>
-                      <td style={{...styles.tdHistMessages, backgroundColor: "lightgreen", width:"10%",fontWeight:"bold"}}>Resolution</td>
-                      <td style={{...styles.tdHistMessages,whiteSpace: "pre-line"}}>{messageHelp}</td>
+                      <td style={{...styles.tdHistMessages, backgroundColor: "yellow", width:"10%",fontWeight:"bold"}}>Questions</td>
+                      <td style={{...styles.tdHistMessages,whiteSpace: "pre-line"}}>{messageQuestions}</td>
+                    </tr>
+                     <tr>
+                      <td style={{...styles.tdHistMessages, backgroundColor: "pink", width:"10%",fontWeight:"bold"}}>Conditions</td>
+                      <td style={{...styles.tdHistMessages,whiteSpace: "pre-line"}}>{messageConditions}</td>
                     </tr>
                     <tr>
-                      <td style={{...styles.tdHistMessages, backgroundColor: "yellow", width:"10%",fontWeight:"bold"}}>KB</td>
-                      <td style={{...styles.tdHistMessages,whiteSpace: "pre-line"}}>{kb}</td>
+                      <td style={{...styles.tdHistMessages, backgroundColor: "lightgreen", width:"10%",fontWeight:"bold"}}>Resolution</td>
+                      <td style={{...styles.tdHistMessages,whiteSpace: "pre-line"}}>{messageResolution}</td>
                     </tr>
+                    <tr>
+                      <td style={{...styles.tdHistMessages, backgroundColor: "lightgrey", width:"10%",fontWeight:"bold"}}>KB</td>
+                      <td style={{...styles.tdHistMessages,whiteSpace: "pre-line"}}>{messageKb}</td>
+                    </tr>
+                  
                   </tbody>
                 </table>
             </div>
 }
 
-export default DivPageGuideHistoricalMessages;
+export default DivPageGuideIncidentsExamplesMessages;

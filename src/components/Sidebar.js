@@ -265,7 +265,7 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
                       fontSize: 18
                     })}
                   >
-                    Schema
+                    Process
                   </NavLink>
                 </li>
 
@@ -278,7 +278,20 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
                       fontSize: 18
                     })}
                   >
-                    Historical
+                    K. Articles
+                  </NavLink>
+                </li>
+
+                <li>
+                  <NavLink
+                    to="/Guides/IncidentsExamples"
+                    style={({ isActive }) => ({
+                      color: isActive ? "cyan" : "white",
+                      textDecoration: "none",
+                      fontSize: 18
+                    })}
+                  >
+                    Examples
                   </NavLink>
                 </li>
 

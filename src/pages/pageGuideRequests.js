@@ -1,8 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { styles } from '../components/ComponentCss';
-import { loadExcelDataCotsList } from '../components/ReadExcelFileData/ExcelLoaderCotsList';
 import { useNavigate } from "react-router-dom";
 import { FaEdit } from "react-icons/fa"; // Icône "Edit" de FontAwesome
+import { loadDataExcelCotsList } from '../components/ReadExcelFileData/ExcelLoaderCotsList';
 
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
@@ -17,7 +17,7 @@ const DivPageGuideRequests = () => {
   // TRAITEMENT DEMARRAGE
   useEffect(() => {
     const fetchData = async () => {
-      var copyData = [...await loadExcelDataCotsList()];
+      var copyData = [...await loadDataExcelCotsList(0)];
       SetExcelDataLoad(copyData);
     }
       fetchData();

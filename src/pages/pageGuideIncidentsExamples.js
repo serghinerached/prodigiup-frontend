@@ -7,7 +7,7 @@ import { FaEdit } from "react-icons/fa"; // Icône "Edit" de FontAwesome
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
-const DivPageGuideIncidentsHistorical = () => {
+const DivPageGuideIncidentsExamples = () => {
 
   // DECLARATIONS
   const [excelHelpLoad, SetExcelHelpLoad] = useState([]);  
@@ -17,7 +17,7 @@ const DivPageGuideIncidentsHistorical = () => {
   // TRAITEMENT DEMARRAGE
   useEffect(() => {
     const fetchData = async () => {
-      var copyData = [...await loadDataExcelCotsList(3)];
+      var copyData = [...await loadDataExcelCotsList(5)];
       SetExcelHelpLoad(copyData);
     }
       fetchData();
@@ -25,7 +25,7 @@ const DivPageGuideIncidentsHistorical = () => {
 
   // click icone msg
   const handleIconHistClick = (id) => {
-    navigate(`/Guides/HistoricalMessages/${id}`); // redirection vers /detail/id
+    navigate(`/Guides/IncidentsExamplesMessages/${id}`); // redirection vers /detail/id
   };
 
   //************************************************************************** */
@@ -33,7 +33,7 @@ const DivPageGuideIncidentsHistorical = () => {
   return (
     <div style={styles.divPageGuideRequests}>
 
-      <h2 style={styles.title}>Incidents - K.Articles</h2>
+      <h2 style={styles.title}>Incidents - Examples</h2>
       <br />
 
        <table style={styles.tableRequests}>
@@ -55,7 +55,7 @@ const DivPageGuideIncidentsHistorical = () => {
                       <td style={styles.tdTabHistorical}>{row[0]}</td> 
                       <td style={styles.tdTabHistorical} >{row[1]}</td> 
                       <td style={styles.tdIncidentsCol4}>
-                        <FaEdit size={20} style={styles.colMessages} onClick={() => handleIconHistClick([row[0], row[2]])}/>
+                        <FaEdit size={20} style={styles.colMessages} onClick={() => handleIconHistClick([row[0], row[1], row[2]])}/>
                       </td> 
                     </tr>
                   )
@@ -71,4 +71,4 @@ const DivPageGuideIncidentsHistorical = () => {
   );
 };
 
-export default DivPageGuideIncidentsHistorical;
+export default DivPageGuideIncidentsExamples;

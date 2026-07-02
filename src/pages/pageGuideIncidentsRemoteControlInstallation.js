@@ -1,6 +1,6 @@
 import {styles} from '../components/ComponentCss';
 import {useState, useRef,useEffect} from "react";
-import { loadExcelIncidentsMessagesCotsList } from '../components/ReadExcelFileData/ExcelLoaderCotsList';
+import { loadDataExcelCotsList } from '../components/ReadExcelFileData/ExcelLoaderCotsList';
 
 
 function DivPageGuideIncidentsRemoteControlInstallation() {
@@ -12,7 +12,7 @@ function DivPageGuideIncidentsRemoteControlInstallation() {
     // TRAITEMENT DEMARRAGE
       useEffect(() => {
         const fetchData = async () => {
-          var copyData = [...await loadExcelIncidentsMessagesCotsList()];
+          var copyData = [...await loadDataExcelCotsList(2)];
           SetExcelMessagesLoad(copyData);
         }
           fetchData();
