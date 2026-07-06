@@ -3,9 +3,9 @@ import {useState,useEffect} from "react";
 import { useParams } from 'react-router-dom';
 import { loadDataExcelCotsList } from '../components/ReadExcelFileData/ExcelLoaderCotsList';
 
-
 function DivPageGuideIncidentsExamplesMessages() {
-  const {id} = useParams();
+  const {id} = useParams(); 
+  console.log(id);
   const application = id.split(',')[0]; // Récupère le premier élément du tableau
   const issue = id.split(',')[1]; // Récupère le deuxième élément du tableau
   const numHelp = id.split(',')[2]; // Récupère le troisième élément du tableau
@@ -18,7 +18,7 @@ function DivPageGuideIncidentsExamplesMessages() {
   const [messageConditions, setMessageConditions] = useState([]);
   const [messageResolution, setMessageResolution] = useState([]);  
   const [messageKb, setMessageKb] = useState([]);
-  
+  const [pathImage, setPathImage] = useState(null);
     
   // TRAITEMENT DEMARRAGE
   useEffect(() => {
@@ -41,6 +41,8 @@ function DivPageGuideIncidentsExamplesMessages() {
         setMessageConditions(excelMessagesLoad[i][2]);
         setMessageResolution(excelMessagesLoad[i][3]);
         setMessageKb(excelMessagesLoad[i][4]);
+        const imageName = excelMessagesLoad[i][5];
+        setPathImage(imageName ? `${process.env.PUBLIC_URL}/images/${imageName}` : null);
         break;
       }
 
@@ -49,6 +51,8 @@ function DivPageGuideIncidentsExamplesMessages() {
       }
     }
   }, [excelMessagesLoad, numHelp])
+
+
 
   //******************************************************* */
   
@@ -75,7 +79,15 @@ function DivPageGuideIncidentsExamplesMessages() {
                     </tr>
                     <tr>
                       <td style={{...styles.tdHistMessages, backgroundColor: "lightgreen", width:"10%",fontWeight:"bold"}}>Resolution</td>
-                      <td style={{...styles.tdHistMessages,whiteSpace: "pre-line"}}>{messageResolution}</td>
+                     <td style={{...styles.tdHistMessages, whiteSpace: "pre-line"}}>
+                      {messageResolution}
+                      <br/>
+                     {pathImage && (
+                        <a href={pathImage} target="_blank" rel="noreferrer">
+                          <img src={pathImage} alt="Logo" style={{ height: '100px', cursor: 'pointer' }} />
+                        </a>
+                      )}
+                    </td>
                     </tr>
                     <tr>
                       <td style={{...styles.tdHistMessages, backgroundColor: "lightgrey", width:"10%",fontWeight:"bold"}}>KB</td>
