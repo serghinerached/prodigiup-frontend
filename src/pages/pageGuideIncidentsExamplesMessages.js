@@ -6,9 +6,10 @@ import { loadDataExcelCotsList } from '../components/ReadExcelFileData/ExcelLoad
 function DivPageGuideIncidentsExamplesMessages() {
   const {id} = useParams(); 
   console.log(id);
-  const application = id.split(',')[0]; // Récupère le premier élément du tableau
-  const issue = id.split(',')[1]; // Récupère le deuxième élément du tableau
-  const numHelp = id.split(',')[2]; // Récupère le troisième élément du tableau
+  const idDecode = decodeURIComponent(id);
+  const application = idDecode.split(',')[0]; // Récupère le premier élément du tableau
+  const issue = idDecode.split(',')[1]; // Récupère le deuxième élément du tableau
+  const numHelp = idDecode.split(',')[2]; // Récupère le troisième élément du tableau
 
    // DECLARATIONS
   const [messageHelp, SetMessageHelp] = useState([]);  

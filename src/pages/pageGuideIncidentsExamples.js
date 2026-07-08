@@ -25,7 +25,8 @@ const DivPageGuideIncidentsExamples = () => {
 
   // click icone msg
   const handleIconHistClick = (id) => {
-    navigate(`/Guides/IncidentsExamplesMessages/${id}`); // redirection vers /detail/id
+    console.log("handleIconHistClick id:", id);
+    navigate(`/Guides/IncidentsExamplesMessages/${encodeURIComponent(id)}`); // redirection vers /detail/id
   };
 
   //************************************************************************** */
