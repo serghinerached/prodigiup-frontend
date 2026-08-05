@@ -7,7 +7,7 @@ import { FaEdit } from "react-icons/fa"; // Icône "Edit" de FontAwesome
 
 const API_URL = process.env.REACT_APP_BACKEND_URL;
 
-const DivPageGuideIncidentsHistorical = () => {
+const DivPageGuideIncidentsKarticles = () => {
 
   // DECLARATIONS
   const [excelHelpLoad, SetExcelHelpLoad] = useState([]);  
@@ -71,4 +71,4 @@ const DivPageGuideIncidentsHistorical = () => {
   );
 };
 
-export default DivPageGuideIncidentsHistorical;
+export default DivPageGuideIncidentsKarticles;

@@ -271,7 +271,7 @@ function Sidebar({ isMenuOpen, setIsMenuOpen }) {
 
                 <li>
                   <NavLink
-                    to="/Guides/IncidentsHistorical"
+                    to="/Guides/IncidentsKarticles"
                     style={({ isActive }) => ({
                       color: isActive ? "cyan" : "white",
                       textDecoration: "none",

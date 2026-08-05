@@ -15,7 +15,7 @@ import GuideRequestsMessagesComponent from "./components/GuideRequestsMessagesCo
 import GuideRequestVsLicenseKeyComponent from "./components/GuideRequestsVsLicenseKeyComponent";
 import GuideIncidentsComponent from "./components/GuideIncidentsComponent";
 import GuideIncidentsMessageComponent from "./components/GuideIncidentsMessagesComponent";
-import GuideIncidentsHistoricalComponent from "./components/GuideIncidentsHistoricalComponent";
+import GuideIncidentsKarticlesComponent from "./components/GuideIncidentsKarticlesComponent";
 import GuideHistoricalMessagesComponent from "./components/GuideHistoricalMessagesComponent";
 import GuideIncidentsExamplesComponent from "./components/GuideIncidentsExamplesComponent";
 import GuideIncidentsExamplesMessagesComponent from "./components/GuideIncidentsExamplesMessagesComponent";
@@ -83,7 +83,7 @@ function App() {
             <Route path="/Guides/Incidents" element={<GuideIncidentsComponent />} />
             <Route path="/Guides/incidentsMessages/:id" element={<GuideIncidentsMessageComponent />} />
             <Route path="/Guides/AccessRequests" element={<GuideRequestsComponent />} />
-            <Route path="/Guides/IncidentsHistorical" element={<GuideIncidentsHistoricalComponent />} />
+            <Route path="/Guides/IncidentsKarticles" element={<GuideIncidentsKarticlesComponent />} />
             <Route path="/Guides/HistoricalMessages/:id" element={<GuideHistoricalMessagesComponent />} />
             <Route path="/Guides/IncidentsExamples" element={<GuideIncidentsExamplesComponent />} />
             <Route path="/Guides/IncidentsExamplesMessages/:id" element={<GuideIncidentsExamplesMessagesComponent />} />

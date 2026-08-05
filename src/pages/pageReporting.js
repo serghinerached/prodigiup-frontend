@@ -40,10 +40,37 @@ const DivPageReporting = () => {
   const tabLibMonth = ["January", "February", "March", "April", "May", "June",
     "July", "August", "September", "October", "November", "December"];
   const tabnumMonth = Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')).sort((a,b) => b.localeCompare(a));
+  const tablibDay = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
   const tabItem =["Sctasks","Incidents","Packages","KBs"];
   const tabQ = ["Q1","Q2","Q3","Q4"];
   const [dataIncidentsResolved, setDataIncidentsResolved] = useState([]);
+
+  // var dates
+  const [today, setToday] = useState(new Date());
+  const [currentDay, setCurrentDay] = useState(today.getDate());
+  var [currentMonth, setCurrentMonth] = useState(today.getMonth() + 1);
+  const currentYear = today.getFullYear();
+  var [libCurrentMonth, setLibCurrentMonth] = useState(tabLibMonth[currentMonth - 1]);
+
+  // for tableau 3
+  const [currentMonthPrev, setCurrentMonthPrev] = useState(today.getMonth());
+  const [libCurrentMonthPrev, setLibCurrentMonthPrev] = useState(tabLibMonth[currentMonthPrev - 1]);
+  const currentYearPrev = currentYear - 1;
+
+  var currentMonth2 = null ;
+  if(currentMonth < 10) {
+    currentMonth2 = "0" + currentMonth;
+  }
+  var currentDay2 = null ;
+  if(currentDay < 10) {
+    currentDay2 = "0" + currentDay;
+  }
+
+  if(today.getDate() <= 7) {
+    currentMonth = currentMonthPrev;
+    libCurrentMonth = libCurrentMonthPrev;
+  }
 
   //---- fonctions utiles ----
 
@@ -87,8 +114,6 @@ const DivPageReporting = () => {
   //---------------
 
   const getLast10Weeks = () => {
-    const today = new Date();
-
     // semaine ISO courante
     const currentWeek = findWeek(today);
 
@@ -113,7 +138,7 @@ const DivPageReporting = () => {
 
   //--------------------
 
-  const currentYear = new Date().getFullYear();
+ // const currentYear = new Date().getFullYear();
 
   const countByWeek = (tableData, year, week) => {
     return tableData
@@ -128,15 +153,13 @@ const DivPageReporting = () => {
   //-----------------
 
   const countResolvedCurrentMonth = () => {
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
 
     return dataIncidentsResolved.filter(inc => {
       const d = new Date(inc.resolved);
 
       return (
         d.getFullYear() === currentYear &&
-        d.getMonth() === currentMonth
+        d.getMonth() === currentMonthPrev - 1
       );
     }).length;
   };
@@ -144,15 +167,12 @@ const DivPageReporting = () => {
   //-----------------
 
   const countReopenCurrentMonth = () => {
-    const currentMonth = new Date().getMonth();
-    const currentYear = new Date().getFullYear();
-
     return dataIncidentsResolved.filter(inc => {
       const d = new Date(inc.resolved);
 
       return (
         d.getFullYear() === currentYear &&
-        d.getMonth() === currentMonth &&
+        d.getMonth() === currentMonthPrev - 1 &&
         Number(inc.reopenCount || 0) > 0
       );
     }).length;
@@ -255,6 +275,7 @@ const DivPageReporting = () => {
       console.error("Erreur fetch performance1s :", error);
       setIncidentsDatas([["Number","Resolved"]]);
     }
+    
   };
 
   useEffect(() => { // au demarrage 
@@ -347,15 +368,6 @@ const DivPageReporting = () => {
   };
 
   //--------
-
-  // for tableau 3
-  const currentMonth = new Date().getMonth() + 1;
-  const libCurrentMonth = tabLibMonth[currentMonth - 1];
-  const currentMonthPrev = new Date().getMonth();
-  const libCurrentMonthPrev = tabLibMonth[currentMonthPrev - 1];
-  const currentYearPrev = currentYear - 1;
-
-  //-----------
 
   const getMttrIcon = (mttr) => {
     if (mttr < 3) {
@@ -489,7 +501,7 @@ const DivPageReporting = () => {
   return (
     <div style={{ marginLeft:'220px',marginBottom:'5px',textAlign:'left',}}>
 
-      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>REPORTING : 2026-07-06</h2>
+      <h2 style={{ display: 'inline-block',fontweight:'bold',marginLeft:'500px',marginRight:50}}>REPORTING : {currentYear}-{currentMonth2}-{currentDay2}</h2>
 
       <br /> 
 
@@ -603,13 +615,13 @@ const DivPageReporting = () => {
                           (
                             item === "Incidents"
                               ? countIncidents(incidentsDatas, year, quarter)
-                              : item === "Sctasks"
-                              ? countIncidents(sctasksDatas, year, quarter)
-                              : item === "KBs"
-                              ? countIncidents(kbsDatas, year, quarter)
-                              : item === "Packages"
-                              ? countIncidents(packagesDatas, year, quarter)
-                              : 0
+                                : item === "Sctasks"
+                                ? countIncidents(sctasksDatas, year, quarter)
+                                  : item === "KBs"
+                                  ? countIncidents(kbsDatas, year, quarter)
+                                    : item === "Packages"
+                                    ? countIncidents(packagesDatas, year, quarter)
+                                      : 0
                           )
                         );
                       }, 0)
