@@ -82,7 +82,6 @@ function App() {
             <Route path="/Guides/VsLicenseKey" element={<GuideRequestVsLicenseKeyComponent />} />
             <Route path="/Guides/Incidents" element={<GuideIncidentsComponent />} />
             <Route path="/Guides/incidentsMessages/:id" element={<GuideIncidentsMessageComponent />} />
-            <Route path="/Guides/AccessRequests" element={<GuideRequestsComponent />} />
             <Route path="/Guides/IncidentsKarticles" element={<GuideIncidentsKarticlesComponent />} />
             <Route path="/Guides/HistoricalMessages/:id" element={<GuideHistoricalMessagesComponent />} />
             <Route path="/Guides/IncidentsExamples" element={<GuideIncidentsExamplesComponent />} />
