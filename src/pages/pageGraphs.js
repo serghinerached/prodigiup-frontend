@@ -104,7 +104,11 @@ const DivPageGraphs = () => {
     const key = `${year}-${month}`;
 
     const service = row[2]; // ✅ FIX
-    const mttr = parseFloat(row[3]); // OK
+    var mttr = parseFloat(row[3]); // OK
+
+    if(isNaN(mttr)) {
+      mttr = 0;
+    }
 
     if (!service || isNaN(mttr)) return;
 
@@ -122,6 +126,7 @@ const DivPageGraphs = () => {
 
   const getAvgMttrMonth = (key) => {
     const services = mttrByYearMonthService[key];
+    //console.log(key,services)
     if (!services) return null;
 
     let sum = 0;

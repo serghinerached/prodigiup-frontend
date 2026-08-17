@@ -58,14 +58,14 @@ const DivPageReporting = () => {
   const [libCurrentMonthPrev, setLibCurrentMonthPrev] = useState(tabLibMonth[currentMonthPrev - 1]);
   const currentYearPrev = currentYear - 1;
 
-  var currentMonth2 = null ;
+  var currentMonth2 = currentDay ;
   if(currentMonth < 10) {
     currentMonth2 = "0" + currentMonth;
   }
-  var currentDay2 = null ;
+  var currentDay2 = currentDay ;
   if(currentDay < 10) {
     currentDay2 = "0" + currentDay;
-  }
+  } 
 
   if(today.getDate() <= 7) {
     currentMonth = currentMonthPrev;
@@ -159,7 +159,7 @@ const DivPageReporting = () => {
 
       return (
         d.getFullYear() === currentYear &&
-        d.getMonth() === currentMonthPrev - 1
+        d.getMonth() === currentMonthPrev 
       );
     }).length;
   };
