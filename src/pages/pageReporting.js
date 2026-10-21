@@ -58,7 +58,7 @@ const DivPageReporting = () => {
   const [libCurrentMonthPrev, setLibCurrentMonthPrev] = useState(tabLibMonth[currentMonthPrev - 1]);
   const currentYearPrev = currentYear - 1;
 
-  var currentMonth2 = currentDay ;
+  var currentMonth2 = currentMonth ;
   if(currentMonth < 10) {
     currentMonth2 = "0" + currentMonth;
   }
@@ -141,6 +141,7 @@ const DivPageReporting = () => {
  // const currentYear = new Date().getFullYear();
 
   const countByWeek = (tableData, year, week) => {
+
     return tableData
       .slice(1)
       .filter(row =>
@@ -148,13 +149,14 @@ const DivPageReporting = () => {
         row[3] === `W${week}`
       )
       .length;
+    
   };
 
   //-----------------
 
   const countResolvedCurrentMonth = () => {
 
-    return dataIncidentsResolved.filter(inc => {
+    return  dataIncidentsResolved.filter(inc => {
       const d = new Date(inc.resolved);
 
       return (
@@ -162,6 +164,7 @@ const DivPageReporting = () => {
         d.getMonth() === currentMonthPrev 
       );
     }).length;
+
   };
 
   //-----------------
@@ -207,6 +210,9 @@ const DivPageReporting = () => {
           ];
         })
       ];
+          console.log("tableQY_Incidents",tableQY_Incidents);
+          console.log("countByWeek", countByWeek(tableQY_Incidents, 2026, 41));
+
       setIncidentsDatas(tableQY_Incidents);
 
       // sctasks-----------------------------------------------------
@@ -804,7 +810,7 @@ const DivPageReporting = () => {
                 </td>
 
                 <td style={{ textAlign:"center", border:"1px solid black", padding:3 }}>
-                  {getMttrMonthYear(currentMonth, currentYear)}
+                  {getMttrMonthYear(currentMonth2, currentYear)}
                 </td>
 
                 <td style={{ textAlign:"center",  padding:3,verticalAlign:"middle"}}>
@@ -829,10 +835,10 @@ const DivPageReporting = () => {
                   Reopen  
                 </td>
                 <td style={{ textAlign:"center", border:"1px solid black", padding:3}}>
-                  {countReopenCurrentMonth()}
+                  {0}
                 </td>
                 <td style={{ textAlign:"center",  padding:3}}>
-                  {getSlaReopenIcon(countReopenCurrentMonth())}
+                  {getSlaReopenIcon(0)}
                 </td>
 
               </tr>
