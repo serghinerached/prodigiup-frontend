@@ -161,7 +161,7 @@ const DivPageReporting = () => {
 
       return (
         d.getFullYear() === currentYear &&
-        d.getMonth() === currentMonthPrev 
+        d.getMonth() === currentMonthPrev -1
       );
     }).length;
 
@@ -211,7 +211,6 @@ const DivPageReporting = () => {
         })
       ];
           console.log("tableQY_Incidents",tableQY_Incidents);
-          console.log("countByWeek", countByWeek(tableQY_Incidents, 2026, 41));
 
       setIncidentsDatas(tableQY_Incidents);
 
@@ -297,7 +296,7 @@ const DivPageReporting = () => {
 
       return (
         d.getFullYear() === Number(year) &&
-        d.getMonth() + 1 === Number(month) &&
+        d.getMonth() + 1 === Number(month) - 1 &&
         inc.service &&
         inc.mttr !== null &&
         inc.mttr !== undefined &&
